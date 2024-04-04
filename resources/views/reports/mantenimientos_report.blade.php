@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <title>Reporte de Mantenimientos</title>
+    <style>
+        .logo {
+            max-width: 95px; /* Ajusta el tamaño máximo de la imagen */
+            margin-right: 20px; /* Espacio entre la imagen y el título */
+        }
+        body{
+            font-size: 14px;
+        }
+        .header,
+        .footer {
+            position: fixed; /* Fija el encabezado y el pie de página */
+            left: 0;
+            right: 0;
+            height: 100px; /* Altura del encabezado */
+            padding: 10px; /* Espaciado interno */
+            border-bottom: 1px solid #ccc; /* Línea divisoria en la parte inferior */
+        }
+
+        .header {
+            top: 0; /* Coloca el encabezado en la parte superior */
+        }
+
+        .footer {
+            bottom: 0; /* Coloca el pie de página en la parte inferior */
+        }
+
+        .content {
+            margin-top: 120px; /* Ajusta el margen superior para dejar espacio para el encabezado */
+        }
+        @media print {
+        .page-break {
+            page-break-after: always;
+        }
+    }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+        <header class="header">
+            <div class="">
+                <div class="col-sm-2 float-left">
+                    <img src="{{ public_path('images/logo.jpg') }}" alt="Logo" class="img-fluid mb-4 logo">
+                </div>
+                <div class="col-sm-8 float-right"><br>
+                    <h5 class="text-center text-uppercase" style="font-family: Arial, sans-serif; font-weight: bold; color: #2874A6;">Sistema de Gestión de Mantenimiento de Vehículos</h5>
+                </div>
+            </div>
+        </header>
+</div><br>
+<div class="content">
+    <h4 class="text-center" style="font-family: Arial, sans-serif; font-weight: bold;">Reporte del Mantenimiento N° {{ $mantenimiento->id }}</h4><br>
+            <table class="table table-sm table-striped table-bordered">
+                <thead class="thead-dark text-center">
+                    <tr>
+                        <th colspan="6">Datos del Mantenimiento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center">
+                        <th style="font-weight: bold;">Fecha Requerimiento</th>
+                        <th style="font-weight: bold;">Fecha Conformidad de Servicio</th>
+                        <th style="font-weight: bold;">Fecha Ingreso Taller</th>
+                        <th style="font-weight: bold;">Fecha Salida Taller</th>
+                        <th style="font-weight: bold;">Tipo</th>
+                        <th style="font-weight: bold;">Expediente</th>
+                    </tr>
+                    <tr>
+                        <td>{{ $mantenimiento->fecha_requerimiento }}</td>
+                        <td>{{ $mantenimiento->fecha_conformidad_servicio }}</td>
+                        <td>{{ $mantenimiento->fecha_ingreso_taller }}</td>
+                        <td>{{ $mantenimiento->fecha_salida_taller }}</td>
+                        <td>{{ $mantenimiento->tipo }}</td>
+                        <td>{{ $mantenimiento->expediente }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+        <table class="table table-sm table-striped table-bordered">
+                <thead class="thead-dark text-center">
+                    <tr>
+                        <th colspan="5">Datos del Vehículo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center">
+                        <th style="font-weight: bold;">Unidad</th>
+                        <th style="font-weight: bold;">Placa</th>
+                        <th style="font-weight: bold;">Marca</th>
+                        <th style="font-weight: bold;">Modelo</th>
+                        <th style="font-weight: bold;">Año</th>
+                    </tr>
+                    <tr>
+                        <td>{{ $mantenimiento->vehiculo->unidad ?? '' }}</td>
+                        <td>{{ $mantenimiento->vehiculo->placa ?? '' }}</td>
+                        <td>{{ $mantenimiento->vehiculo->marca ?? '' }}</td>
+                        <td>{{ $mantenimiento->vehiculo->modelo ?? '' }}</td>
+                        <td>{{ $mantenimiento->vehiculo->anio ?? '' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+        <table class="table table-sm table-striped table-bordered">
+                <thead class="thead-dark text-center">
+                    <tr>
+                        <th colspan="2">Datos del Proveedor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center">
+                        <th style="font-weight: bold;">Nombre</th>
+                        <th style="font-weight: bold;">RUC</th>
+                    </tr>
+                    <tr>
+                        <td>{{ $mantenimiento->proveedor->nombre ?? '' }}</td>
+                        <td>{{ $mantenimiento->proveedor->ruc ?? '' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+<!-- Tabla de reparaciones -->
+<h4 class="text-center" style="font-family: Arial, sans-serif; font-weight: bold;">Reparaciones</h4>
+<table class="table table-sm table-bordered">
+    <thead class="thead-dark text-center">
+        <tr>
+            <th>Elemento</th>
+            <th>Descripción</th>
+            <th>Costo</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($mantenimiento->detallesMantenimiento as $detalle)
+        <tr>
+            <td>{{ $detalle->reparacion->elemento ?? '' }}</td> 
+            <td>{{ $detalle->descripcion ?? '' }}</td>
+            <td style="text-align:right;">{{ number_format($detalle->costo, 2, ',', '.') }} S/.</td>
+        </tr>
+        @endforeach
+        <tr>
+            <td colspan="2" class="thead-light" style="font-weight: bold;">TOTAL</td>
+            <td style="font-weight: bold; text-align:right;">{{ number_format($mantenimiento->detallesMantenimiento->sum('costo'), 2, ',', '.') }} S/.</td>
+        </tr>
+    </tbody>
+</table>
+
+
+</div>
+<script type="text/php">
+        if ( isset($pdf) ) {
+            $pdf->page_script('
+                $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
+                $pdf->text(270, 820, "Pág $PAGE_NUM de $PAGE_COUNT", $font, 10);
+            ');
+        }
+</script>
+<script type="text/php">
+    if (isset($pdf)) {
+        $size = 10;
+        $text = date('d.m.Y H:i:s');
+        $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
+        $text_height = $fontMetrics->get_font_height($font, $size);
+        $width = $fontMetrics->get_text_width($text, $font, $size);
+        $w = $pdf->get_width() - $width - 32;
+        $y = $pdf->get_height() - $text_height - 820;
+
+        $pdf->page_text($w, $y, $text, $font, $size);
+    }
+</script>
+
+</body>
+</html>
