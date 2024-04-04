@@ -63,6 +63,9 @@ jQuery(document).ready(function($) {
     });
 });
 </script>
+
+
+
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -224,34 +227,6 @@ jQuery(document).ready(function($) {
 						<h5 class="text-center">Historial de mantenimientos por vehículo</h5>
 					</div>
 					<div class="card-body"  style="padding-left:3%;padding-right: 3%;">
-                    <div class="accordion accordion-flush" id="acordionbuscarporfecha">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header">
-                            <button class="accordion-button collapsed text-bold border border-warning p-2 mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#flush-colapsarprimero" aria-expanded="false" aria-controls="flush-colapsarprimero">
-                                Reporte por rango de fecha
-                            </button>
-                            </h2>
-                            <div id="flush-colapsarprimero" class="accordion-collapse collapse" data-bs-parent="#acordionbuscarporfecha">
-                                <div class="accordion-body">
-                                <form id="searchFormVehi">
-                                    <div class="row">
-                                        <div class="col-md-12 row">
-                                            <label for="fecha_inicio_vehi" class="form-label col">Fecha de inicio:</label>
-                                            <input type="date" id="fecha_inicio_vehi" name="fecha_inicio_vehi" class="form-control col">
-                                        </div>
-                                        <div class="col-md-12 row">
-                                            <label for="fecha_fin_vehi" class="form-label col">Fecha de fin:</label>
-                                            <input type="date" id="fecha_fin_vehi" name="fecha_fin_vehi" class="form-control col">
-                                        </div>
-                                    </div><br>
-                                    <div class="col text-right mx-auto d-grid gap-2">
-                                            <button type="submit" class="btn btn-warning">Aceptar &nbsp&nbsp<i class="fas fa-search"></i></button>
-                                        </div>
-                                </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div><br>
 					<table class="table table-hover" id="vehiculos-home" style="width:100%;text-align: center;">
 						<thead class="table-warning" style="width:100%;text-align: center;">
 							<tr>
@@ -276,50 +251,20 @@ jQuery(document).ready(function($) {
 			}
 		});
 	});
-    function imprimirFunc(id, fecha_inicio_vehi, fecha_fin_vehi) {
-    $.ajax({
-        type: "POST",
-        url: "{{ url('home/print')}}",
-        data: { id: id, fecha_inicio_vehi: fecha_inicio_vehi, fecha_fin_vehi: fecha_fin_vehi },
-        success: function(response) {
-            // Abre una nueva ventana con el URL del PDF
-            window.open(response.url, '_blank');
-        },
-        error: function(xhr, status, error) {
-            console.error(xhr.responseText);
-        }
-    });
-}
-
-    jQuery('#searchFormVehi').submit(function(e) {
-    e.preventDefault();
-    var formData = $(this).serialize(); // Obtiene los datos del formulario
-
-    $.ajax({
-    type: 'GET',
-    url: "{{ route('home.datatable') }}",
-    data: formData,
-    dataType: 'json',
-    success: function(response) {
-        var dataTableRows = response.data;
-        var tableBody = $('#vehiculos-home tbody');
-        
-        // Iterar sobre los datos recibidos y actualizar las filas
-        $.each(dataTableRows, function(index, rowData) {
-            var row = tableBody.find('tr:eq(' + index + ')');
-            var actionColumn = row.find('td:eq(3)');
-            actionColumn.html(rowData.action); // Actualizar los botones en la columna de acciones
-        });
-
-        alert('Se aplicó el filtro y se actualizaron los botones');
-    },
-    error: function(xhr, status, error) {
-        console.error(xhr.responseText);
-    }
-});
-
-
-});
+	function imprimirFunc(id) {
+		$.ajax({
+			type: "POST",
+			url: "{{ url('home/print')}}",
+			data: { id: id },
+			success: function(response) {
+				// Abre una nueva ventana con la URL del PDF
+				window.open(response.url, '_blank');
+			},
+			error: function(xhr, status, error) {
+				console.error(xhr.responseText);
+			}
+		});
+	}
 </script>
 <script type="text/javascript">
     let graficoMantenimientos = null; // Variable global para almacenar el gráfico

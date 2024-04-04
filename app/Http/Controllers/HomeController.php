@@ -88,32 +88,21 @@ private function calcularEstado($ultimoMantenimiento)
 
     return 'Sin mantenimiento - Disponible';
 }
+
+
+
+
 public function print(Request $request)
 {
-    // Obtener vehículo
     $vehiculo = Vehiculos::findOrFail($request->id);
-    
-    // Obtener fechas del formulario
-    $fecha_inicio_vehi = $request->fecha_inicio_vehi;
-    $fecha_fin_vehi = $request->fecha_fin_vehi;
+    $vehiculo->load('mantenimientos');
 
-    // Obtener mantenimientos dentro del rango de fechas si las fechas no están vacías
-    if (!empty($fecha_inicio_vehi) && !empty($fecha_fin_vehi)) {
-        $mantenimientos = $vehiculo->mantenimientos()
-                            ->whereBetween('fecha_requerimiento', [$fecha_inicio_vehi, $fecha_fin_vehi])
-                            ->get();
-    } else {
-        // Si las fechas están vacías, obtener todos los mantenimientos del vehículo
-        $mantenimientos = $vehiculo->mantenimientos;
-    }
-
-    // Procesar mantenimientos y generar PDF
-    foreach ($mantenimientos as $mantenimiento) {
+    foreach ($vehiculo->mantenimientos as $mantenimiento) {
         if (!is_null($mantenimiento->fecha_conformidad_servicio)) {
             $mantenimiento->estado = 'Completado';
             $mantenimiento->estado_class = 'badge-primary';
         } elseif (!is_null($mantenimiento->fecha_ingreso_taller) || !is_null($mantenimiento->fecha_salida_taller)) {
-            $mantenimiento->estado = 'En curso';
+            $mantenimiento->estado = '  En curso  ';
             $mantenimiento->estado_class = 'badge-warning';
         } else {
             $mantenimiento->estado = 'Desconocido';
@@ -121,8 +110,9 @@ public function print(Request $request)
         }
     }
 
-    $pdf = PDF::loadView('reports.vehiculos_home_report', compact('vehiculo', 'mantenimientos'))->setPaper('a4','landscape');
+    $pdf = PDF::loadView('reports.vehiculos_home_report', compact('vehiculo'))->setPaper('a4','landscape');
 
+    
     // Guarda el PDF temporalmente
     $pdfPath = public_path('vehiculos_home_report.pdf');
     $pdf->save($pdfPath);
@@ -130,7 +120,6 @@ public function print(Request $request)
     // Devuelve la URL del PDF
     return response()->json(['url' => url('vehiculos_home_report.pdf')]);
 }
-
 public function obtenerDatosGrafico(Request $request)
 {
     $fechaInicio = $request->input('fecha_inicio');
