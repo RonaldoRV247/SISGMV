@@ -28,7 +28,7 @@
                                     @auth
                                         <a href="{{ url('/home') }}" class="btn btn-success">Home</a>
                                     @else
-                                        <a href="{{ route('login') }}" class="btn btn-success btn-lg">Ingresarasdasdsa</a>
+                                        <a href="{{ route('login') }}" class="btn btn-success btn-lg">Ingresar</a>
                                             @if (Route::has('register'))
                                             <a href="{{ route('register') }}" class="btn btn-info btn-lg">Registrarse</a>
                                         @endif
