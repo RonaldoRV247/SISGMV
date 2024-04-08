@@ -80,9 +80,9 @@
                                         <option value="" hidden>Seleccione tipo</option>
                                             <option value="CORRECTIVO">CORRECTIVO</option>
                                             <option value="PREVENTIVO">PREVENTIVO</option>
+                                            <option value="PREVENTIVO / CORRECTIVO">PREVENTIVO / CORRECTIVO</option>
                                             <option value="CORRECTIVO / NO EJECUTADO">CORRECTIVO NO EJECUTADO</option>
                                             <option value="PREVENTIVO / NO EJECUTADO">PREVENTIVO NO EJECUTADO</option>
-                                            <option value="PREVENTIVO / CORRECTIVO">PREVENTIVO / CORRECTIVO</option>
                                         </select>
                                     </div>
                                     <label for="expediente" class="col-sm-2 control-label">Expediente</label>

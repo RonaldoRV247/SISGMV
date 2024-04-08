@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
-    <title>{{ config('app.name', 'SISGMV')}}</title> 
-    <!-- <title>SISGMV</title>-->
+    <title>{{ config('app.name', 'MAESTRANZA')}}</title> 
+    <!-- <title>MAESTRANZA</title>-->
     <link rel="icon" href="{{ asset('images/AdminLTELogo.png') }}">
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -82,7 +82,7 @@
             <img src="{{ asset('images/AdminLTELogo.png') }}" alt="AdminLTE Logo"
                  class="brand-image  elevation-3"
                  style="">
-            <span class="brand-text font-weight-light">SISGMV</span>
+            <span class="brand-text font-weight-light">MAESTRANZA</span>
         </a>
 
         @include('layouts.navigation')

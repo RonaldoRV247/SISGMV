@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'SISGMV') }}</title>
+    <title>{{ config('app.name', 'MAESTRANZA') }}</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -23,7 +23,7 @@ width: 100%;
 height: auto;
 min-height: 35rem;
 padding: 15rem 0;
-background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 60%, #000 100%), url("../images/munidi.jpg");
+background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 60%, #000 100%), url("../images/munidi3.jpg");
 background-position: center;
 background-repeat: no-repeat;
 background-attachment: scroll;
@@ -34,7 +34,7 @@ background-size: cover;}
     <!-- /.login-logo -->
     <div class="card">
     <div class="login-logo">
-        <a href="/">{{ config('app.name', 'SISGMV') }}</a>
+        <a href="/">{{ config('app.name', 'MAESTRANZA') }}</a>
     </div>
         @yield('content')
     </div>
