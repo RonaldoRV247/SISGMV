@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
 Route::get('home/datatable', [HomeController::class, 'vehiculosDatatable'])->name('home.datatable');
 Route::post('home/print',[HomeController::class,'print'])->middleware('web');
 Route::get('home/obtener_datos_grafico',[HomeController::class,'obtenerDatosGrafico'])->middleware('web');
+Route::get('home/obtener_datos_grafico2',[HomeController::class,'obtenerDatosGrafico2'])->middleware('web');
 //Rutas para vistas de proveedores
 Route::get('proveedores', [ProveedoresController::class, 'index']);
 Route::post('proveedores/store', [ProveedoresController::class, 'store'])->middleware('web');

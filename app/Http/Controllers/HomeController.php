@@ -167,4 +167,61 @@ public function obtenerDatosGrafico(Request $request)
         'terminados' => $terminados,
     ]);
 }
+
+public function obtenerDatosGrafico2(Request $request)
+{
+    $fechaInicio2 = $request->input('fecha_inicio2');
+    $fechaFin2 = $request->input('fecha_fin2');
+// Si las fechas no están definidas, obtener los mantenimientos totales de los últimos 12 meses
+if (!$fechaInicio2 || !$fechaFin2) {
+    $fechaInicio2 = Carbon::now()->subMonths(11)->startOfMonth()->toDateString();
+    $fechaFin2 = Carbon::now()->endOfMonth()->toDateString();
+}
+
+    // Convertir las fechas de inicio y fin a objetos DateTime para facilitar el cálculo
+    $fechaInicio2 = new \DateTime($fechaInicio2);
+    $fechaFin2 = new \DateTime($fechaFin2);
+
+    // Obtener los datos de mantenimientos por mes dentro del rango de fechas especificado
+    $fechaActual2 = clone $fechaInicio2;
+    $meses = [];
+    $correctivos = [];
+    $preventivos = [];
+    $preventivoscorrectivos = [];
+
+    // Recorrer cada mes dentro del rango de fechas
+    while ($fechaActual2 <= $fechaFin2) {
+        $meses[] = $fechaActual2->format('Y-m');
+
+        // Contar los mantenimientos por tipo en el mes
+        $mantenimientosCorrectivos = Mantenimientos::where('tipo', 'CORRECTIVO')
+            ->whereYear('fecha_requerimiento', $fechaActual2->format('Y'))
+            ->whereMonth('fecha_requerimiento', $fechaActual2->format('m'))
+            ->count();
+        $correctivos[] = $mantenimientosCorrectivos;
+
+        $mantenimientosPreventivos = Mantenimientos::where('tipo', 'PREVENTIVO')
+            ->whereYear('fecha_requerimiento', $fechaActual2->format('Y'))
+            ->whereMonth('fecha_requerimiento', $fechaActual2->format('m'))
+            ->count();
+        $preventivos[] = $mantenimientosPreventivos;
+
+        $mantenimientosPreventivosCorrectivos = Mantenimientos::where('tipo', 'PREVENTIVO / CORRECTIVO')
+            ->whereYear('fecha_requerimiento', $fechaActual2->format('Y'))
+            ->whereMonth('fecha_requerimiento', $fechaActual2->format('m'))
+            ->count();
+        $preventivoscorrectivos[] = $mantenimientosPreventivosCorrectivos;
+
+        // Avanzar al siguiente mes
+        $fechaActual2->modify('+1 month');
+    }
+
+    return response()->json([
+        'meses' => $meses,
+        'correctivos' => $correctivos,
+        'preventivos' => $preventivos,
+        'preventivoscorrectivos' => $preventivoscorrectivos,
+    ]);
+}
+
 }

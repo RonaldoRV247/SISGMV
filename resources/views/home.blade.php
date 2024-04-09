@@ -147,20 +147,20 @@ jQuery(document).ready(function($) {
                                 <a class="nav-link active" id="custom-tabs-one-nmantenimientos-tab" data-toggle="pill" href="#custom-tabs-one-nmantenimientos" role="tab" aria-controls="custom-tabs-one-nmantenimientos" aria-selected="true">N° de mantenimientos</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="custom-tabs-one-minversion-tab" data-toggle="pill" href="#custom-tabs-one-minversion" role="tab" aria-controls="custom-tabs-one-minversion" aria-selected="false">Monto de inversión</a>
+                                <a class="nav-link" id="custom-tabs-one-minversion-tab" data-toggle="pill" href="#custom-tabs-one-minversion" role="tab" aria-controls="custom-tabs-one-minversion" aria-selected="false">Tipos de mantenimiento</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="custom-tabs-one-estadosvehiculos-tab" data-toggle="pill" href="#custom-tabs-one-estadosvehiculos" role="tab" aria-controls="custom-tabs-one-estadosvehiculos" aria-selected="false">Estado de vehículos</a>
+                                <a class="nav-link" id="custom-tabs-one-estadosvehiculos-tab" data-toggle="pill" href="#custom-tabs-one-estadosvehiculos" role="tab" aria-controls="custom-tabs-one-estadosvehiculos" aria-selected="false">Vehículos reincidentes</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="custom-tabs-one-reparacionescomunes-tab" data-toggle="pill" href="#custom-tabs-one-reparacionescomunes" role="tab" aria-controls="custom-tabs-one-reparacionescomunes" aria-selected="false">Reparaciones más comunes</a>
+                                <a class="nav-link" id="custom-tabs-one-reparacionescomunes-tab" data-toggle="pill" href="#custom-tabs-one-reparacionescomunes" role="tab" aria-controls="custom-tabs-one-reparacionescomunes" aria-selected="false">Reparaciones más frecuentes</a>
                             </li>
                         </ul>
                     </div>
                     <div class="card-body">
                         <div class="tab-content" id="custom-tabs-one-tabContent">
                             <div class="tab-pane fade active show" id="custom-tabs-one-nmantenimientos" role="tabpanel" aria-labelledby="custom-tabs-one-nmantenimientos-tab">
-                                <!-- Contenido de Home -->
+                                <!-- Contenido de N° de mantenimientos -->
                                 <div class="card">
                                     <div class="card-header">
                                         <h6 class="text-center text-bold">Buscar por rango de fecha</h6><hr>
@@ -186,30 +186,36 @@ jQuery(document).ready(function($) {
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="custom-tabs-one-minversion" role="tabpanel" aria-labelledby="custom-tabs-one-minversion-tab">
-                                <!-- Contenido de Profile -->
+                                <!-- Contenido de tipos de mantenimiento -->
                                 <div class="card">
                                     <div class="card-header">
-                                        <h6 class="text-center">
-                                            Monto de inversión por mantenimiento
-                                        </h6><hr>
-                                        <form id="costomantenimientoForm">
+                                        <h6 class="text-center text-bold">Buscar por rango de fecha</h6><hr>
+                                        <form id="searchForm2">
                                             <div class="row">
                                                 <div class="col-md-4 row">
-                                                    <label for="" class="from-label col"></label>
-                                                    <input type="" class="form-control col">
+                                                    <label for="fecha_inicio2" class="form-label col">Fecha de inicio:</label>
+                                                    <input type="month" id="fecha_inicio2" name="fecha_inicio2" class="form-control col">
                                                 </div>
-                                                <div class="col-md-4"></div>
-                                                <div class="col-md-4"></div>
+                                                <div class="col-md-4 row">
+                                                    <label for="fecha_fin2" class="form-label col">Fecha de fin:</label>
+                                                    <input type="month" id="fecha_fin2" name="fecha_fin2" class="form-control col">
+                                                </div>
+                                                <div class="col-md-4 text-right mx-auto d-grid gap-2">
+                                                    <button type="submit" class="btn btn-success">Buscar &nbsp&nbsp<i class="fas fa-search"></i></button>
+                                                </div>
                                             </div>
                                         </form>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="grafico_tipos_mantenimientos" class="chart"></canvas>
                                     </div>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="custom-tabs-one-estadosvehiculos" role="tabpanel" aria-labelledby="custom-tabs-one-estadosvehiculos-tab">
-                                <!-- Contenido de Messages -->
+                                <!-- Contenido de Vehiculos reincidentes -->
                             </div>
                             <div class="tab-pane fade" id="custom-tabs-one-reparacionescomunes" role="tabpanel" aria-labelledby="custom-tabs-one-reparacionescomunes-tab">
-                                <!-- Contenido de Settings -->
+                                <!-- Contenido de Reparaciones frecuentes -->
                             </div>
                         </div>
                     </div>
@@ -368,6 +374,109 @@ jQuery(document).ready(function($) {
         });
     });
 </script>
+<script type="text/javascript">
+    let graficoTiposMantenimientos = null; // Variable global para almacenar el gráfico
 
+jQuery(document).ready(function($) {
+
+    function cargarGrafico2(datos) {
+        if (graficoTiposMantenimientos) {
+        graficoTiposMantenimientos.destroy();
+    }
+        // Configurar y cargar el segundo gráfico (Tipos de Mantenimientos)
+        const config = {
+            type: 'bar',
+            data: {
+                labels: datos.meses,
+                datasets: [{
+                    label: 'Mantenimientos Correctivos',
+                    data: datos.correctivos,
+                    backgroundColor: 'rgba(216, 9, 107, 0.5)',
+                    borderColor: 'rgba(85, 142, 47, 1)',
+                    borderWidth: 1,
+                    barThickness: 20
+                }, {
+                    label: 'Mantenimientos Preventivos',
+                    data: datos.preventivos,
+                    backgroundColor: 'rgba(17, 227, 217, 0.5)',
+                    borderColor: 'rgba(17, 182, 118, 1)',
+                    borderWidth: 1,
+                    barThickness: 20
+                }, {
+                    label: 'Mantenimientos Correctivos/Preventivos',
+                    data: datos.preventivoscorrectivos,
+                    backgroundColor: 'rgba(4, 186, 18 , 0.5)',
+                    borderColor: 'rgba(14, 162, 18, 1)',
+                    borderWidth: 1,
+                    barThickness: 20
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Tipos de Mantenimientos'
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: {
+                            stepSize: 1,
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        };
+
+        // Crear el gráfico
+        var ctx = document.getElementById('grafico_tipos_mantenimientos').getContext('2d');
+        graficoTiposMantenimientos = new Chart(ctx, config);
+
+    }
+
+    // Realizar la solicitud AJAX para obtener los datos del segundo gráfico
+    $.ajax({
+        url: '{{ url("home/obtener_datos_grafico2") }}',
+        type: 'GET',
+        success: function(response) {
+            cargarGrafico2(response);
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+        }
+    });
+
+    // Manejar el envío del formulario para cargar el segundo gráfico con el rango de fechas especificado
+    $('#searchForm2').on('submit', function(event) {
+        event.preventDefault();
+
+        var fechaInicio2 = $('#fecha_inicio2').val();
+        var fechaFin2 = $('#fecha_fin2').val();
+
+        $.ajax({
+            url: '{{ url("home/obtener_datos_grafico2") }}',
+            type: 'GET',
+            data: {
+                fecha_inicio2: fechaInicio2,
+                fecha_fin2: fechaFin2
+            },
+            success: function(response) {
+                cargarGrafico2(response);
+                $('#fecha_inicio2').val('');
+                $('#fecha_fin2').val('');
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    });
+});
+
+</script>
 
 @endsection

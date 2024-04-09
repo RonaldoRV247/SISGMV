@@ -71,7 +71,7 @@
                                 <th>NOMBRE</th>
                                 <th>APELLIDOS</th>
                                 <th>CELULAR</th>
-                                <th>VEHÍCULOS</th>
+                                <th>VEHÍCULOS A CARGO</th>
                                 <th>OPCIONES</th>
                             </tr>
                         </thead>
