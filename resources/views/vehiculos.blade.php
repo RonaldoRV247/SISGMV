@@ -206,11 +206,11 @@
                                 <div class="form-group row col-sm-12">
                                 <label for="km" class="col-sm-2 control-label">Kilometraje</label>
                                         <div class="col-sm">
-                                        <input type="number" class="form-control" id="km" name="km" placeholder="Ingresa el Kilometraje">
+                                        <input type="number" step="0.01" class="form-control" id="km" name="km" placeholder="Ingresa el Kilometraje">
                                     </div>
                                     <label for="carga_util_kg" class="col-sm-2 control-label">Carga Útil kg</label>
                                         <div class="col-sm">
-                                        <input type="number" class="form-control" id="carga_util_kg" name="carga_util_kg" placeholder="Ingresa la Capacidad en kg">
+                                        <input type="number" step="0.01" class="form-control" id="carga_util_kg" name="carga_util_kg" placeholder="Ingresa la Capacidad en kg">
                                     </div>
                                 </div>
                                 <div class="form-group">
