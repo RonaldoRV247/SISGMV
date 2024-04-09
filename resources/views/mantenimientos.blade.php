@@ -6,7 +6,10 @@
     .select2-selection__clear {
         display: none;
     }
-    
+    .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option[role=group] .select2-results__group {
+    color: blue !important;
+    font-size: 18px !important;
+}
     </style>
     <script src="{{ asset('js/mantenimientos.js') }}"></script>
 
@@ -136,9 +139,12 @@
                                     <label for="reparaciones_id" class="col-sm-2 control-label">Reparaciones</label>
                                         <div class="col-sm-12">
                                         <select name="reparaciones_id[]" class="form-control" id="reparaciones_id" multiple required>
-                                            
-                                            @foreach($reparaciones as $reparacion)
-                                                <option value="{{ $reparacion->id }}">&nbsp&nbsp&nbsp{{ $reparacion->id }}.- {{ $reparacion->elemento }}</option>
+                                            @foreach($categorias as $categoria)
+                                                <optgroup label="{{ $categoria->categoria_rep }}">
+                                                    @foreach($categoria->reparaciones as $reparacion)
+                                                        <option value="{{ $reparacion->id }}">&nbsp&nbsp&nbsp{{ $reparacion->id }}.- {{ $reparacion->elemento }}</option>
+                                                    @endforeach
+                                                </optgroup>
                                             @endforeach
                                         </select>
                                         </div>

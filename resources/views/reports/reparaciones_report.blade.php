@@ -62,18 +62,22 @@
             <table class="table table-sm table-striped table-bordered">
                 <thead class="thead-dark text-center">
                     <tr>
-                        <th colspan="2">Datos de las Reparaciones</th>
+                        <th colspan="3">Datos de las Reparaciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="thead-dark text-center">
                         <th style="font-weight: bold;">ID</th>
-                        <th style="font-weight: bold;">Elemento</th>                        
+                        <th style="font-weight: bold;">Elemento</th> 
+                        <th style="font-weight: bold;">Categoría</th>                       
                     </tr>
                     @foreach ($reparaciones as $reparacion)
                     <tr>
                         <td>{{ $reparacion->id }}</td>
                         <td>{{ $reparacion->elemento }}</td>
+                        <td>
+                            {{ $reparacion->categorias->categoria_rep ?? '' }}
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>

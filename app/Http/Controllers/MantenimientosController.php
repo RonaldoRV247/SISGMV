@@ -10,6 +10,7 @@ use App\Models\Vehiculos;
 use App\Models\Proveedores;
 use App\Models\Reparaciones;
 use App\Models\Detalles_Mantenimiento;
+use App\Models\Categorias;
 use Datatables;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -20,6 +21,7 @@ class MantenimientosController extends Controller
     {
         $proveedores = Proveedores::all();
         $reparaciones = Reparaciones::all();
+        $categorias = Categorias::with('reparaciones')->get();
         
         $vehiculos = Vehiculos::all();
         if(request()->ajax()) {
@@ -35,7 +37,7 @@ class MantenimientosController extends Controller
             ->addIndexColumn()
             ->make(true);
         }
-        return view('mantenimientos',compact('proveedores','vehiculos','reparaciones'));
+        return view('mantenimientos',compact('proveedores','vehiculos','reparaciones','categorias'));
     }
     
 /*     private function calcularEstado($estMantenimiento){

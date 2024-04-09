@@ -23,13 +23,45 @@
                                 columns: [
                                     { data: 'id', name: 'id' },
                                     { data: 'elemento', name: 'elemento' },
+                                    { data: 'categoria_rep', name: 'categoria_rep' },
                                     { data: 'action', name: 'action', orderable: false},
                                 ],
                                 order: [[0, 'desc']]
             });
+            $('#categorias_id').select2({
+                language: {
+                    noResults: function() {return "No hay resultado";},
+                    searching: function() {return "Buscando..";}
+                    },
+                placeholder: "Selecciona una categoría",
+                allowClear: true,
+                dropdownParent: $('#reparaciones-modal'),
+                theme: 'bootstrap-5',
+                width: '100%',
+                minimunResultsForSearch: Infinity,
+            }).on('select2:opening', function(e) {
+                    e.stopPropagation(); 
+                });
+                $('#categorias_id').on("select2:unselect", function (e) {
+                e.preventDefault();
+                });
+                
+                function limpiarSelect2() {
+                    $('#categorias_id').val(null).trigger('change');
+                    $('#select2-categorias_id-container').val(null).trigger('change');
+                }
+
+                jQuery('#reparaciones-modal').on('hidden.bs.modal', function (event) {
+                    limpiarSelect2();
+                });
             
         });
     </script>
+        <style>
+    .select2-selection__clear {
+        display: none;
+    }
+    </style>
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -66,6 +98,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>ELEMENTO</th>
+                                <th>CATEGORIA</th>
                                 <th>OPCIONES</th>
                             </tr>
                         </thead>
@@ -90,7 +123,18 @@
                                         <div class="col-sm-12">
                                         <input type="text" class="form-control" id="elemento" name="elemento" placeholder="Ingresa elemento" required>
                                     </div>
-                                </div>  
+                                </div>
+                                <div class="form-group">
+                                    <label for="categorias_id" class="col-sm-2 control-label">Categoría</label>
+                                        <div class="col-sm-12">
+                                        <select name="categorias_id" class="form-select" id="categorias_id">
+                                            <option value="" hidden>Seleccione categoría</option>
+                                            @foreach($categorias as $categoria)
+                                                <option value="{{ $categoria->id }}">{{ $categoria->id }}.- {{ $categoria->categoria_rep }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div> 
                                 <div class="col-sm-offset-2 col-sm-10"><br/>
                                     <button type="submit" class="btn btn-primary" id="btn-guardar">Guardar</button>
                                 </div>
@@ -129,6 +173,8 @@
                         $('#reparaciones-modal').modal('show');
                         $('#id').val(res.id);
                         $('#elemento').val(res.elemento);
+                        $('#categorias_id').val(res.categorias_id);
+                        $('#select2-categorias_id-container').text($('#categorias_id option:selected').text());
                     }
                     
                 });
@@ -183,6 +229,7 @@
                         var tableex = new DataTable('#reparaciones');
                             tableex.ajax.reload();
                             tableex.draw(false);
+                            $('#select2-categorias_id-container').empty().text('Selecciona una categoría');
                         
                         $("#btn-guardar").html('Guardar');
                         $("#btn-guardar"). attr("disabled", false);

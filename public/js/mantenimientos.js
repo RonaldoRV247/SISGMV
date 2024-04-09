@@ -108,14 +108,31 @@ jQuery( document ).ready(function( $ ) {
         language: {
             noResults: function() {return "No hay resultado";},
             searching: function() {return "Buscando..";}
-            },
+        },
         placeholder: "Selecciona una o más reparaciones",
         allowClear: true,
         dropdownParent: $('#mantenimientos-modal'),
         theme: 'bootstrap-5',
         width:'100%',
         minimunResultsForSearch: Infinity,
-    });$('#reparaciones_id').val(null).trigger('change');
+        templateResult: function(data) {
+            if (!data.id) {
+                // No hay datos para mostrar
+                return data.text;
+            }
+    
+            var $element = $('<span></span>');
+            $element.text(data.text);
+    
+            // Verificar si es un optgroup
+            if (data.element && data.element.dataset && data.element.dataset.optgroup) {
+                $element.prepend('<strong>' + data.element.dataset.optgroup + '</strong><br>');
+            }
+    
+            return $element;
+        }
+    });
+    $('#reparaciones_id').val(null).trigger('change');
 
     $('#tipo').on("select2:unselect", function (e) {
     $(this).val('').trigger('change');
