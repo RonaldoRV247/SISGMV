@@ -9,6 +9,7 @@ use App\Models\Mantenimientos;
 use App\Models\Detalles_Mantenimiento;
 use App\Models\Proveedores;
 use App\Models\Personas;
+use App\Models\Reparaciones;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
@@ -262,6 +263,37 @@ public function obtenerVehiculosReincidentes(Request $request)
         'vehiculosDatosCompletos' => $vehiculosDatosCompletos, // Nueva variable para datos completos de vehículos
     ]);
 }
+public function obtenerReparacionesFrecuentes(Request $request)
+{
+    // Consulta que cuenta la frecuencia de cada reparación en la tabla detalles_mantenimiento
+    $reparacionesFrecuentes = DB::table('detalles_mantenimiento')
+        ->select('reparaciones_id', DB::raw('COUNT(*) as frecuencia'))
+        ->groupBy('reparaciones_id')
+        ->orderBy('frecuencia', 'desc')
+        ->get();
 
+    // Ahora, necesitamos obtener los nombres de las reparaciones a partir de sus IDs
+    $reparaciones = [];
+    $frecuencias = [];
+
+    foreach ($reparacionesFrecuentes as $reparacionFrecuente) {
+        // Obtener la reparación correspondiente a la ID
+        $reparacion = Reparaciones::find($reparacionFrecuente->reparaciones_id);
+
+        if ($reparacion) {
+            // Añadir el nombre de la reparación a la lista de reparaciones
+            $reparaciones[] = $reparacion->elemento;
+            
+            // Añadir la frecuencia a la lista de frecuencias
+            $frecuencias[] = $reparacionFrecuente->frecuencia;
+        }
+    }
+
+    // Retornar los datos en formato JSON
+    return response()->json([
+        'reparaciones' => $reparaciones,
+        'frecuencias' => $frecuencias,
+    ]);
+}
 
 }

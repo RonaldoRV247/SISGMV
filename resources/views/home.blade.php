@@ -227,6 +227,15 @@ jQuery(document).ready(function($) {
                             </div>
                             <div class="tab-pane fade" id="custom-tabs-one-reparacionescomunes" role="tabpanel" aria-labelledby="custom-tabs-one-reparacionescomunes-tab">
                                 <!-- Contenido de Reparaciones frecuentes -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="text-center text-bold">Reparaciones más Frecuentes</h6><hr>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="grafico_reparaciones" class="chart"></canvas><br>
+                                        <table id="tabla_reparaciones_chart" class="table table-bordered table-hover" style=""></table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -626,6 +635,78 @@ $.ajax({
 });
 
 });
+</script><script type="text/javascript">
+let graficoReparaciones = null; // Variable global para almacenar el gráfico
+
+jQuery(document).ready(function($) {
+    // Genera un color aleatorio
+    function generarColorAleatorio(opacidad = 0.5) {
+        const rojo = Math.floor(Math.random() * 256);
+        const verde = Math.floor(Math.random() * 256);
+        const azul = Math.floor(Math.random() * 256);
+        return `rgba(${rojo}, ${verde}, ${azul}, ${opacidad})`;
+    }
+
+    // Función para cargar el gráfico de reparaciones
+    function cargarGraficoReparaciones(datos) {
+        // Destruir el gráfico anterior si existe
+        if (graficoReparaciones) {
+            graficoReparaciones.destroy();
+        }
+
+        // Generar colores aleatorios para las reparaciones
+        const backgroundColors = [];
+        for (let i = 0; i < datos.frecuencias.length; i++) {
+            backgroundColors.push(generarColorAleatorio());
+        }
+
+        // Configuración del gráfico de tipo pie
+        const config = {
+            type: 'pie',
+            data: {
+                labels: datos.reparaciones,
+                datasets: [{
+                    data: datos.frecuencias,
+                    backgroundColor: backgroundColors,
+                    borderColor: '#fff', // Borde blanco alrededor de cada sección
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                aspectRatio: 1.3,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: false,
+                        text: 'Reparaciones más frecuentes'
+                    }
+                }
+            }
+        };
+
+        // Crear el gráfico
+        const ctx = document.getElementById('grafico_reparaciones').getContext('2d');
+        graficoReparaciones = new Chart(ctx, config);
+    }
+
+    // Solicitud AJAX para obtener los datos de las reparaciones más frecuentes
+    $.ajax({
+        url: '{{ url("home/obtener_reparaciones_frecuentes") }}',
+        type: 'GET',
+        success: function(response) {
+            // Verificar el contenido de response
+            console.log(response);
+            cargarGraficoReparaciones(response);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error al obtener datos:', error);
+        }
+    });
+});
 </script>
+
 
 @endsection
