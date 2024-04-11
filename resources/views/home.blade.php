@@ -144,10 +144,10 @@ jQuery(document).ready(function($) {
                     <div class="card-header p-0 pt-1">
                         <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="custom-tabs-one-nmantenimientos-tab" data-toggle="pill" href="#custom-tabs-one-nmantenimientos" role="tab" aria-controls="custom-tabs-one-nmantenimientos" aria-selected="true">N° de mantenimientos</a>
+                                <a class="nav-link" id="custom-tabs-one-nmantenimientos-tab" data-toggle="pill" href="#custom-tabs-one-nmantenimientos" role="tab" aria-controls="custom-tabs-one-nmantenimientos" aria-selected="true">N° de mantenimientos</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="custom-tabs-one-minversion-tab" data-toggle="pill" href="#custom-tabs-one-minversion" role="tab" aria-controls="custom-tabs-one-minversion" aria-selected="false">Tipos de mantenimiento</a>
+                                <a class="nav-link active" id="custom-tabs-one-minversion-tab" data-toggle="pill" href="#custom-tabs-one-minversion" role="tab" aria-controls="custom-tabs-one-minversion" aria-selected="false">Tipos de mantenimiento</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="custom-tabs-one-estadosvehiculos-tab" data-toggle="pill" href="#custom-tabs-one-estadosvehiculos" role="tab" aria-controls="custom-tabs-one-estadosvehiculos" aria-selected="false">Vehículos reincidentes</a>
@@ -159,7 +159,7 @@ jQuery(document).ready(function($) {
                     </div>
                     <div class="card-body">
                         <div class="tab-content" id="custom-tabs-one-tabContent">
-                            <div class="tab-pane fade active show" id="custom-tabs-one-nmantenimientos" role="tabpanel" aria-labelledby="custom-tabs-one-nmantenimientos-tab">
+                            <div class="tab-pane fade" id="custom-tabs-one-nmantenimientos" role="tabpanel" aria-labelledby="custom-tabs-one-nmantenimientos-tab">
                                 <!-- Contenido de N° de mantenimientos -->
                                 <div class="card">
                                     <div class="card-header">
@@ -181,11 +181,12 @@ jQuery(document).ready(function($) {
                                         </form>
                                     </div>
                                     <div class="card-body">
-                                        <canvas id="grafico_mantenimientos" class="chart"></canvas>
+                                        <canvas id="grafico_mantenimientos" class="chart"></canvas><br>
+                                        <table id="tabla_estados_mantenimientos" class="table"></table>
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="custom-tabs-one-minversion" role="tabpanel" aria-labelledby="custom-tabs-one-minversion-tab">
+                            <div class="tab-pane fade active show" id="custom-tabs-one-minversion" role="tabpanel" aria-labelledby="custom-tabs-one-minversion-tab">
                                 <!-- Contenido de tipos de mantenimiento -->
                                 <div class="card">
                                     <div class="card-header">
@@ -207,12 +208,14 @@ jQuery(document).ready(function($) {
                                         </form>
                                     </div>
                                     <div class="card-body">
-                                        <canvas id="grafico_tipos_mantenimientos" class="chart"></canvas>
+                                        <canvas id="grafico_tipos_mantenimientos" class="chart"></canvas><br>
+                                        <table id="tabla_tipos_mantenimientos" class="table"></table>
                                     </div>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="custom-tabs-one-estadosvehiculos" role="tabpanel" aria-labelledby="custom-tabs-one-estadosvehiculos-tab">
                                 <!-- Contenido de Vehiculos reincidentes -->
+                                
                             </div>
                             <div class="tab-pane fade" id="custom-tabs-one-reparacionescomunes" role="tabpanel" aria-labelledby="custom-tabs-one-reparacionescomunes-tab">
                                 <!-- Contenido de Reparaciones frecuentes -->
@@ -330,6 +333,17 @@ jQuery(document).ready(function($) {
             // Crear el gráfico
             var ctx = document.getElementById('grafico_mantenimientos').getContext('2d');
             graficoMantenimientos = new Chart(ctx, config);
+
+            var tablaHTML1 = '<table><thead class="table-dark text-center"><tr><th>Estado de Mantenimientos</th><th>Número</th></tr></thead><tbody>';
+            // Correctivos
+            var totalSolicitados = datos.solicitados.reduce((a, b) => a + b, 0);
+            tablaHTML1 += '<tr><td>Mantenimientos solicitados</td><td class="text-right">' + totalSolicitados + '</td></tr>';
+            // Preventivos
+            var totalTerminados = datos.terminados.reduce((a, b) => a + b, 0);
+            tablaHTML1 += '<tr><td>Mantenimientos terminados</td><td class="text-right">' + totalTerminados + '</td></tr>';
+            tablaHTML1 += '</tbody></table>';
+            // Insertar la tabla en el documento
+            $('#tabla_estados_mantenimientos').html(tablaHTML1);
         }
 
         // Realizar la solicitud AJAX para obtener los datos del gráfico al cargar la página
@@ -436,7 +450,23 @@ jQuery(document).ready(function($) {
         // Crear el gráfico
         var ctx = document.getElementById('grafico_tipos_mantenimientos').getContext('2d');
         graficoTiposMantenimientos = new Chart(ctx, config);
-
+        // Construir la tabla con los datos recibidos
+        var tablaHTML = '<table><thead class="table-dark text-center"><tr><th>Tipo de Mantenimiento</th><th>Número</th></tr></thead><tbody>';
+        // Correctivos
+        var totalCorrectivos = datos.correctivos.reduce((a, b) => a + b, 0);
+        tablaHTML += '<tr><td>Mantenimientos Correctivos</td><td class="text-right">' + totalCorrectivos + '</td></tr>';
+        // Preventivos
+        var totalPreventivos = datos.preventivos.reduce((a, b) => a + b, 0);
+        tablaHTML += '<tr><td>Mantenimientos Preventivos</td><td class="text-right">' + totalPreventivos + '</td></tr>';
+        // Correctivos/Preventivos
+        var totalPreventivosCorrectivos = datos.preventivoscorrectivos.reduce((a, b) => a + b, 0);
+        tablaHTML += '<tr><td>Mantenimientos Correctivos/Preventivos</td><td class="text-right">' + totalPreventivosCorrectivos + '</td></tr>';
+        // Total general de todos los mantenimientos
+        var totalGeneral = totalCorrectivos + totalPreventivos + totalPreventivosCorrectivos;
+        tablaHTML += '<tr><td><strong>Total General</strong></td><td class="text-right"><strong>' + totalGeneral + '</strong></td></tr>';
+        tablaHTML += '</tbody></table>';
+        // Insertar la tabla en el documento
+        $('#tabla_tipos_mantenimientos').html(tablaHTML);
     }
 
     // Realizar la solicitud AJAX para obtener los datos del segundo gráfico
