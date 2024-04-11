@@ -182,7 +182,7 @@ jQuery(document).ready(function($) {
                                     </div>
                                     <div class="card-body">
                                         <canvas id="grafico_mantenimientos" class="chart"></canvas><br>
-                                        <table id="tabla_estados_mantenimientos" class="table"></table>
+                                        <table id="tabla_estados_mantenimientos" class="table table-bordered table-hover"></table>
                                     </div>
                                 </div>
                             </div>
@@ -209,13 +209,21 @@ jQuery(document).ready(function($) {
                                     </div>
                                     <div class="card-body">
                                         <canvas id="grafico_tipos_mantenimientos" class="chart"></canvas><br>
-                                        <table id="tabla_tipos_mantenimientos" class="table"></table>
+                                        <table id="tabla_tipos_mantenimientos" class="table table-bordered table-hover"></table>
                                     </div>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="custom-tabs-one-estadosvehiculos" role="tabpanel" aria-labelledby="custom-tabs-one-estadosvehiculos-tab">
                                 <!-- Contenido de Vehiculos reincidentes -->
-                                
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="text-center text-bold">Mantenimientos por Vehículo</h6><hr>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="grafico_vehiculos" class="chart"></canvas><br>
+                                        <table id="tabla_vehiculos_chart" class="table table-bordered table-hover" style=""></table>
+                                    </div>
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="custom-tabs-one-reparacionescomunes" role="tabpanel" aria-labelledby="custom-tabs-one-reparacionescomunes-tab">
                                 <!-- Contenido de Reparaciones frecuentes -->
@@ -506,7 +514,118 @@ jQuery(document).ready(function($) {
         });
     });
 });
+</script>
+<script type="text/javascript">
+    let graficoVehiculos = null; // Variable global para almacenar el gráfico
 
+jQuery(document).ready(function($) {
+    function cargarGraficoReincidentes(datos) {
+    // Configurar y cargar el gráfico de vehículos reincidentes
+    if (graficoVehiculos) {
+        graficoVehiculos.destroy();
+    }
+    
+    // Definir arrays de colores para cada barra
+    const backgroundColors = [
+        'rgba(54, 162, 235, 0.5)',
+        'rgba(75, 192, 192, 0.5)',
+        'rgba(255, 99, 132, 0.5)',
+        'rgba(255, 206, 86, 0.5)',
+        'rgba(153, 102, 255, 0.5)',
+        'rgba(255, 159, 64, 0.5)',
+        'rgba(199, 199, 199, 0.5)',
+        // Agrega más colores según necesites
+    ];
+    
+    const borderColors = [
+        'rgba(54, 162, 235, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(255, 99, 132, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)',
+        'rgba(199, 199, 199, 1)',
+        // Agrega más colores según necesites
+    ];
+    
+    // Configuración del gráfico
+    const config = {
+        type: 'bar',
+        data: {
+            labels: datos.vehiculos, // Vehículos reincidentes
+            datasets: [{
+                label: 'Número de Mantenimientos',
+                data: datos.num_mantenimientos,
+                backgroundColor: backgroundColors.slice(0, datos.num_mantenimientos.length),
+                borderColor: borderColors.slice(0, datos.num_mantenimientos.length),
+                borderWidth: 1,
+                barThickness: 20
+            }]
+        },
+        options: {
+            indexAxis: 'y', // Eje horizontal
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Número de Mantenimientos por Vehículos'
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        stepSize: 1,
+                        precision: 0 // Establece la precisión a 0 para eliminar decimales
+                    }
+                }
+            }
+        }
+    };
+
+    // Crear el gráfico
+    var ctx = document.getElementById('grafico_vehiculos').getContext('2d');
+    graficoVehiculos = new Chart(ctx, config);
+// Inicializa la tabla HTML
+let tablaHTML2 = '<table class="table table-bordered"><thead class="table-dark text-center"><tr><th colspan="2">Vehículo</th><th colspan="2">Número de Mantenimientos</th></tr></thead><tbody>';
+
+// Variables para contar el total de vehículos y el total de mantenimientos
+let totalVehiculos = datos.vehiculosDatosCompletos.length;
+let totalMantenimientos = 0;
+
+// Recorre los datos de vehículos reincidentes
+for (let i = 0; i < datos.vehiculosDatosCompletos.length; i++) {
+    // Muestra la información completa del vehículo
+    tablaHTML2 += '<tr><td colspan="2">' + datos.vehiculosDatosCompletos[i] + '</td><td class="text-right" colspan="2">' + datos.num_mantenimientos[i] + '</td></tr>';
+    // Acumula el total de mantenimientos
+    totalMantenimientos += datos.num_mantenimientos[i];
+}
+
+// Agrega la última fila con el total de vehículos y total de mantenimientos
+tablaHTML2 += '<tr><td><strong>Total Vehículos:</strong></td><td class="text-center"><strong>' + totalVehiculos + '</strong></td><td><strong>Total Mantenimientos:</strong></td><td class="text-right"><strong>' + totalMantenimientos + '</strong></td></tr>';
+// Cierra la tabla HTML
+tablaHTML2 += '</tbody></table>';
+
+// Inserta la tabla en el documento
+$('#tabla_vehiculos_chart').html(tablaHTML2);
+
+}
+// Realiza la solicitud AJAX para obtener los datos de los vehículos reincidentes
+$.ajax({
+    url: '{{ url("home/obtener_vehiculos_reincidentes") }}',
+    type: 'GET',
+    success: function(response) {
+        cargarGraficoReincidentes(response);
+    },
+    error: function(xhr, status, error) {
+        console.error('Error al obtener datos:', error);
+    }
+});
+
+});
 </script>
 
 @endsection

@@ -223,5 +223,45 @@ if (!$fechaInicio2 || !$fechaFin2) {
         'preventivoscorrectivos' => $preventivoscorrectivos,
     ]);
 }
+public function obtenerVehiculosReincidentes(Request $request)
+{
+    // Obtener los vehículos que tienen más de un mantenimiento
+    $vehiculosReincidentes = Mantenimientos::select('vehiculos_id', DB::raw('COUNT(*) as num_mantenimientos'))
+        ->groupBy('vehiculos_id')
+        ->having('num_mantenimientos', '>', 0)
+        ->get();
+
+    // Inicializar arrays para almacenar placas de vehículos, número de mantenimientos y datos completos de vehículos
+    $vehiculos = [];
+    $numMantenimientos = [];
+    $vehiculosDatosCompletos = [];
+
+    // Iterar sobre cada resultado
+    foreach ($vehiculosReincidentes as $vehiculo) {
+        // Obtener el vehículo relacionado utilizando la relación 'vehiculo' en Mantenimientos
+        $vehiculoInfo = Vehiculos::find($vehiculo->vehiculos_id);
+
+        // Verificar que se encontró el vehículo relacionado
+        if ($vehiculoInfo) {
+            // Agregar la placa del vehículo a los datos
+            $vehiculos[] = $vehiculoInfo->placa;
+
+            // Agregar el número de mantenimientos a los datos
+            $numMantenimientos[] = $vehiculo->num_mantenimientos;
+
+            // Concatenar datos del vehículo (placa, unidad, marca, modelo, año) para la tabla
+            $datosCompletos = "{$vehiculoInfo->placa} {$vehiculoInfo->unidad} {$vehiculoInfo->marca} {$vehiculoInfo->modelo} {$vehiculoInfo->anio}";
+            $vehiculosDatosCompletos[] = $datosCompletos;
+        }
+    }
+
+    // Retornar los datos en formato JSON
+    return response()->json([
+        'vehiculos' => $vehiculos,
+        'num_mantenimientos' => $numMantenimientos,
+        'vehiculosDatosCompletos' => $vehiculosDatosCompletos, // Nueva variable para datos completos de vehículos
+    ]);
+}
+
 
 }
