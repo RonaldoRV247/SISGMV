@@ -63,7 +63,7 @@
     <table class="table table-sm table-striped table-bordered">
         <thead class="thead-dark text-center">
             <tr>
-                <th colspan="8">Datos del Vehículo</th>
+                <th colspan="9">Datos del Vehículo</th>
             </tr>
         </thead>
         <tbody>
@@ -75,6 +75,7 @@
                 <th style="font-weight: bold;">Modelo</th>
                 <th style="font-weight: bold;">Motor</th>
                 <th style="font-weight: bold;">Año</th>
+                <th style="font-weight: bold;">Kilometraje</th>
                 <th style="font-weight: bold;">Operario</th>
             </tr>
             <tr>
@@ -85,6 +86,7 @@
                 <td>{{ $vehiculo->modelo ?? '' }}</td>
                 <td>{{ $vehiculo->motor ?? '' }}</td>
                 <td>{{ $vehiculo->anio ?? '' }}</td>
+                <td>{{ $vehiculo->km ?? '' }}</td>
                 <td>
                     {{ $vehiculo->personas->nombre ?? '' }} {{ $vehiculo->personas->apellidos ?? '' }}
                 </td>
@@ -95,7 +97,7 @@
             <table class="table table-sm table-striped table-bordered">
                 <thead class="thead-dark text-center">
                     <tr>
-                        <th colspan="9">Datos generales de los Mantenimientos</th>
+                        <th colspan="10">Datos generales de los Mantenimientos</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -107,6 +109,7 @@
                         <th style="font-weight: bold;">Fecha de Conformidad de Servicio</th>
                         <th style="font-weight: bold;">Ingreso al Taller</th>
                         <th style="font-weight: bold;">Salida del Taller</th>
+                        <th style="font-weight: bold;">Kilometraje</th>
                         <th style="font-weight: bold;">Proveedor</th>
                         <th style="font-weight: bold;">Estado</th>
                     </tr>
@@ -119,6 +122,7 @@
                         <td>{{ $mantenimiento->fecha_conformidad_servicio }}</td>
                         <td>{{ $mantenimiento->fecha_ingreso_taller }}</td>
                         <td>{{ $mantenimiento->fecha_salida_taller }}</td>
+                        <td>{{ $mantenimiento->km_mantenimiento }}</td>
                         <td>RUC: {{ $mantenimiento->proveedor->ruc }} - {{ $mantenimiento->proveedor->nombre }}</td>
                         <td class="text-center"><span class="badge {{ $mantenimiento->estado_class }}">{{ $mantenimiento->estado }}</span></td>
                     </tr>

@@ -88,7 +88,7 @@
         <table class="table table-sm table-striped table-bordered">
                 <thead class="thead-dark text-center">
                     <tr>
-                        <th colspan="5">Datos del Vehículo</th>
+                        <th colspan="6">Datos del Vehículo</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -98,6 +98,7 @@
                         <th style="font-weight: bold;">Marca</th>
                         <th style="font-weight: bold;">Modelo</th>
                         <th style="font-weight: bold;">Año</th>
+                        <th style="font-weight: bold;">Kilometraje</th>
                     </tr>
                     <tr>
                         <td>{{ $mantenimiento->vehiculo->unidad ?? '' }}</td>
@@ -105,6 +106,7 @@
                         <td>{{ $mantenimiento->vehiculo->marca ?? '' }}</td>
                         <td>{{ $mantenimiento->vehiculo->modelo ?? '' }}</td>
                         <td>{{ $mantenimiento->vehiculo->anio ?? '' }}</td>
+                        <td>{{ $mantenimiento->km_mantenimiento ?? '' }}</td>
                     </tr>
                 </tbody>
             </table>

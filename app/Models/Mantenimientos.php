@@ -12,7 +12,7 @@ class Mantenimientos extends Model
 {
     use HasFactory;
     protected $table = 'mantenimientos';
-    protected $fillable = [ 'tipo','expediente','fecha_requerimiento','fecha_conformidad_servicio','fecha_ingreso_taller','fecha_salida_taller','vehiculos_id','proveedores_id'];
+    protected $fillable = [ 'tipo','expediente','fecha_requerimiento','fecha_conformidad_servicio','fecha_ingreso_taller','fecha_salida_taller','km_mantenimiento','vehiculos_id','proveedores_id'];
     public function detallesMantenimiento()
     {
         return $this->hasMany(Detalles_Mantenimiento::class, 'mantenimientos_id');

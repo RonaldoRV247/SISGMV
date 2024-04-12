@@ -28,7 +28,7 @@ class MantenimientosController extends Controller
             return datatables()->of(DB::table('mantenimientos')
             ->join('proveedores', 'mantenimientos.proveedores_id', '=', 'proveedores.id')
             ->join('vehiculos', 'mantenimientos.vehiculos_id', '=', 'vehiculos.id')
-            ->select('mantenimientos.id', 'mantenimientos.tipo', 'mantenimientos.expediente', 'mantenimientos.fecha_requerimiento', 'mantenimientos.fecha_conformidad_servicio', 'mantenimientos.fecha_ingreso_taller', 'mantenimientos.fecha_salida_taller', 
+            ->select('mantenimientos.id', 'mantenimientos.tipo', 'mantenimientos.expediente', 'mantenimientos.fecha_requerimiento', 'mantenimientos.fecha_conformidad_servicio', 'mantenimientos.fecha_ingreso_taller', 'mantenimientos.fecha_salida_taller','mantenimientos.km_mantenimiento', 
             DB::raw('CONCAT(COALESCE(vehiculos.unidad, ""), " ", COALESCE(vehiculos.marca, ""), " ", COALESCE(vehiculos.modelo, ""), " - PLACA: ", COALESCE(vehiculos.placa, "")) as vehiculox'), 
             DB::raw('CONCAT("RUC: ", COALESCE(proveedores.ruc, ""), " ", COALESCE(proveedores.nombre, "")) as proveedorx'))
         ->get())
@@ -64,7 +64,16 @@ class MantenimientosController extends Controller
                 'message' => 'Ya existe un mantenimiento registrado con ese expediente. Por favor, ingresa uno diferente.'
             ], 422);
         };
-    
+            // Obtener el vehículo relacionado
+        $vehiculo = Vehiculos::find($request->vehiculos_id);
+        
+        // Validar si el km_mantenimiento es menor que el km actual del vehículo
+        if ($request->km_mantenimiento < $vehiculo->km) {
+            // Si el km_mantenimiento es menor que el km actual del vehículo, devolver un error o no realizar la actualización
+            return response()->json([
+                'message' => 'El kilometraje del nuevo mantenimiento no puede ser menor que el km actual del vehículo.'
+            ], 422);
+        }
         $mantenimientosId = $request->id;
     
         $mantenimientos = Mantenimientos::updateOrCreate(
@@ -78,11 +87,17 @@ class MantenimientosController extends Controller
                 'fecha_conformidad_servicio' => $request->fecha_conformidad_servicio,
                 'fecha_ingreso_taller' => $request->fecha_ingreso_taller,
                 'fecha_salida_taller' => $request->fecha_salida_taller,
+                'km_mantenimiento' => $request->km_mantenimiento,
                 'vehiculos_id' => $request->vehiculos_id,
                 'proveedores_id' => $request->proveedores_id,
             ]
         );
-    
+            // Actualizar la columna km de vehículos
+    // Actualizar la columna km con el valor de km_mantenimiento
+        $vehiculo->km = $request->km_mantenimiento;
+
+        // Guardar los cambios
+        $vehiculo->save();
         // Obtener los detalles de mantenimiento actuales
         $existingDetalles = $mantenimientos->detallesMantenimiento()->pluck('reparaciones_id')->toArray();
         $selectedReparaciones = array_keys($request->precios);

@@ -62,7 +62,7 @@
             <table class="table table-sm table-striped table-bordered">
                 <thead class="thead-dark text-center">
                     <tr>
-                        <th colspan="9">Datos de los Mantenimientos</th>
+                        <th colspan="10">Datos de los Mantenimientos</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,6 +75,7 @@
                         <th style="font-weight: bold;">Fecha de Ingreso al Taller</th>
                         <th style="font-weight: bold;">Fecha de Salida del Taller</th>
                         <th style="font-weight: bold;">Vehículo</th>
+                        <th style="font-weight: bold;">Kilometraje</th>
                         <th style="font-weight: bold;">Proveedor</th>
                     </tr>
                     @foreach ($mantenimientos as $mantenimiento)
@@ -87,6 +88,7 @@
                         <td>{{ $mantenimiento->fecha_ingreso_taller }}</td>
                         <td>{{ $mantenimiento->fecha_salida_taller }}</td>
                         <td>Placa:  {{ $mantenimiento->vehiculo->placa }} -  {{ $mantenimiento->vehiculo->unidad }} {{ $mantenimiento->vehiculo->marca }} {{ $mantenimiento->vehiculo->modelo }} {{ $mantenimiento->vehiculo->anio}}</td>
+                        <td>{{ $mantenimiento->km_mantenimiento }}</td>
                         <td>RUC: {{ $mantenimiento->proveedor->ruc }} - {{ $mantenimiento->proveedor->nombre }}</td>
                     </tr>
                     @endforeach

@@ -33,6 +33,7 @@ jQuery( document ).ready(function( $ ) {
                             { data: 'fecha_ingreso_taller', name: 'fecha_ingreso_taller' },
                             { data: 'fecha_salida_taller', name: 'fecha_salida_taller' },
                             { data: 'vehiculox', name: 'vehiculox' },
+                            { data: 'km_mantenimiento', name: 'km_mantenimiento' },
                             { data: 'proveedorx', name: 'proveedorx' },
                             /*{
                                 data:'estado',

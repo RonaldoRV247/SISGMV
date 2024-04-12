@@ -121,9 +121,9 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-                <div class="container mt-2 card card-primary card-tabs"><br>
+                <div class="mt-2 card card-primary card-tabs"  style="margin: 6%;"><br>
                 <div class="row">
-                    <div class="col-lg-12 margin-tb">
+                    <div class="col-lg-12 margin-tb"  style="margin-left: 1%;">
                         <div class="">
                             <a class="btn btn-primary" onClick="add()" href="javascript:void(0)"> Nuevo Vehículo</a>
                             <a class="btn btn-info" onClick="imprimirFunc()" href="javascript:void(0)"> Imprimir Reporte</a>

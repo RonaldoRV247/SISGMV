@@ -29,11 +29,11 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-                <div class="container mt-2 card card-primary card-tabs">
+                <div class="mt-2 card card-primary card-tabs" style="margin: 5%;">
                     <br>
                 <div class="row">
                     <div class="col-lg-12 margin-tb">
-                        <div class="">
+                        <div class="" style="margin-left: 1%;">
                             <a class="btn btn-primary" onClick="add()" href="javascript:void(0)"> Nuevo Mantenimiento</a>
                             <a class="btn btn-info" onClick="imprimirGenFunc()" href="javascript:void(0)"> Imprimir Reporte</a>
                         </div>
@@ -56,6 +56,7 @@
                                 <th>FECHA DE INGRESO AL TALLER</th>
                                 <th>FECHA DE SALIDA DEL TALLER</th>
                                 <th>VEHÍCULO</th>
+                                <th>KILOMETRAJE</th>
                                 <th>PROVEEDOR</th>
                                 <th>OPCIONES</th>
                             </tr>
@@ -115,13 +116,19 @@
                                 </div>
                                 <div class="form-group row col-sm-12">
                                     <label for="vehiculos_id" class="col-sm-2 control-label">Vehículo</label>
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-10">
                                         <select name="vehiculos_id" class="form-control" id="vehiculos_id" required>
                                         <option value="" hidden></option>
                                             @foreach($vehiculos as $vehiculo)
                                                 <option value="{{ $vehiculo->id }}">{{ $vehiculo->id }}.- Placa: {{ $vehiculo->placa }} - {{ $vehiculo->unidad }} {{ $vehiculo->marca }} {{ $vehiculo->modelo }} {{ $vehiculo->anio }}</option>
                                             @endforeach
                                         </select>
+                                        </div>
+                                </div>
+                                <div class="form-group row col-sm-12">
+                                    <label for="km_mantenimiento" class="col-sm-2 control-label">Kilometraje</label>
+                                            <div class="col-sm-4">
+                                            <input type="number" step="0.01" class="form-control" id="km_mantenimiento" name="km_mantenimiento" placeholder="Ingresa el kilometraje actual">
                                         </div>
                                     <label for="proveedores_id" class="col-sm-2 control-label">Proveedor</label>
                                         <div class="col-sm-4">
@@ -133,6 +140,7 @@
                                         </select>
                                         </div>
                                 </div>
+
                                 <div class="form-group row col-sm-12">
                                 <div class="card" style="width: 100%;" id="divreparaciones">
                                 <br>
@@ -245,6 +253,7 @@
                     $('#fecha_salida_taller').val(res.fecha_salida_taller);
                     $('#vehiculos_id').val(res.vehiculos_id);
                     $('#select2-vehiculos_id-container').text($('#vehiculos_id option:selected').text());
+                    $('#km_mantenimiento').val(res.km_mantenimiento);
                     $('#proveedores_id').val(res.proveedores_id);
                     $('#select2-proveedores_id-container').text($('#proveedores_id option:selected').text());
                     // Reparaciones
