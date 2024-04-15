@@ -233,7 +233,7 @@ jQuery(document).ready(function($) {
                                     </div>
                                     <div class="card-body">
                                         <canvas id="grafico_reparaciones" class="chart"></canvas><br>
-                                        <table id="tabla_reparaciones_chart" class="table table-bordered table-hover" style=""></table>
+                                        <table id="tabla_promedio_precios" class="table table-bordered table-hover" style=""></table>
                                     </div>
                                 </div>
                             </div>
@@ -351,7 +351,7 @@ jQuery(document).ready(function($) {
             var ctx = document.getElementById('grafico_mantenimientos').getContext('2d');
             graficoMantenimientos = new Chart(ctx, config);
 
-            var tablaHTML1 = '<table><thead class="table-dark text-center"><tr><th>Estado de Mantenimientos</th><th>Número</th></tr></thead><tbody>';
+            var tablaHTML1 = `<table><thead class="table-dark text-center"><tr><th>Estado de Mantenimientos del ${datos.fecha_inicio1} a ${datos.fecha_fin1}</th><th>Número</th></tr></thead><tbody>`;
             // Correctivos
             var totalSolicitados = datos.solicitados.reduce((a, b) => a + b, 0);
             tablaHTML1 += '<tr><td>Mantenimientos solicitados</td><td class="text-right">' + totalSolicitados + '</td></tr>';
@@ -468,8 +468,8 @@ jQuery(document).ready(function($) {
         var ctx = document.getElementById('grafico_tipos_mantenimientos').getContext('2d');
         graficoTiposMantenimientos = new Chart(ctx, config);
         // Construir la tabla con los datos recibidos
-        var tablaHTML = '<table><thead class="table-dark text-center"><tr><th>Tipo de Mantenimiento</th><th>Número</th></tr></thead><tbody>';
-        // Correctivos
+var tablaHTML = `<table><thead class="table-dark text-center"><tr><th>Tipo de Mantenimiento del ${datos.fecha_inicio2} a ${datos.fecha_fin2}</th><th>Número</th></tr></thead><tbody>`;
+// Correctivos
         var totalCorrectivos = datos.correctivos.reduce((a, b) => a + b, 0);
         tablaHTML += '<tr><td>Mantenimientos Correctivos</td><td class="text-right">' + totalCorrectivos + '</td></tr>';
         // Preventivos
@@ -705,7 +705,38 @@ jQuery(document).ready(function($) {
             console.error('Error al obtener datos:', error);
         }
     });
+    function generarTablaPromedioPreciosReparaciones(datos) {
+        // Inicializa el HTML de la tabla
+        let tablaHTML = '<table class="table table-bordered"><thead class="table-dark text-center"><tr><th>ID</th><th>Reparación</th><th>Promedio de Precio</th></tr></thead><tbody>';
+        
+        // Itera sobre los datos y crea las filas de la tabla
+        datos.forEach(reparacion => {
+            tablaHTML += `<tr><td>${reparacion.id}</td><td>${reparacion.elemento}</td><td class="text-right">${reparacion.promedio_costo.toFixed(2)} S/.</td></tr>`;
+        });
+
+        // Cierra la tabla
+        tablaHTML += '</tbody></table>';
+
+        // Inserta la tabla debajo del gráfico de reparaciones
+        $('#tabla_promedio_precios').html(tablaHTML);
+    }
+
+    // Llama a la función para realizar la solicitud AJAX al cargar la página
+    $(document).ready(function() {
+        $.ajax({
+            url: '{{ url("home/obtener_promedio_precios_reparaciones") }}',
+            type: 'GET',
+            success: function(response) {
+                generarTablaPromedioPreciosReparaciones(response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error al obtener datos:', error);
+            }
+        });
+    });
+
 });
+
 </script>
 
 

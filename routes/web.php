@@ -44,7 +44,7 @@ Route::get('home/obtener_datos_grafico',[HomeController::class,'obtenerDatosGraf
 Route::get('home/obtener_datos_grafico2',[HomeController::class,'obtenerDatosGrafico2'])->middleware('web');
 Route::get('home/obtener_vehiculos_reincidentes',[HomeController::class,'obtenerVehiculosReincidentes'])->middleware('web');
 Route::get('home/obtener_reparaciones_frecuentes',[HomeController::class,'obtenerReparacionesFrecuentes'])->middleware('web');
-
+Route::get('home/obtener_promedio_precios_reparaciones',[HomeController::class,'obtenerPromedioPreciosReparaciones'])->middleware('web');
 //Rutas para vistas de proveedores
 Route::get('proveedores', [ProveedoresController::class, 'index']);
 Route::post('proveedores/store', [ProveedoresController::class, 'store'])->middleware('web');

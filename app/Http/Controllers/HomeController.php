@@ -166,6 +166,8 @@ public function obtenerDatosGrafico(Request $request)
         'dias' => $dias,
         'solicitados' => $solicitados,
         'terminados' => $terminados,
+        'fecha_inicio1' =>$fechaInicio->format('Y-m-d'),
+        'fecha_fin1' => $fechaFin->format('Y-m-d')
     ]);
 }
 
@@ -222,6 +224,8 @@ if (!$fechaInicio2 || !$fechaFin2) {
         'correctivos' => $correctivos,
         'preventivos' => $preventivos,
         'preventivoscorrectivos' => $preventivoscorrectivos,
+        'fecha_inicio2' => $fechaInicio2->format('Y-m-d'),
+        'fecha_fin2' => $fechaFin2->format('Y-m-d')
     ]);
 }
 public function obtenerVehiculosReincidentes(Request $request)
@@ -294,6 +298,18 @@ public function obtenerReparacionesFrecuentes(Request $request)
         'reparaciones' => $reparaciones,
         'frecuencias' => $frecuencias,
     ]);
+}
+public function obtenerPromedioPreciosReparaciones() {
+    // Realizar una consulta para obtener el promedio de costo por reparación
+    $promedios = DB::table('detalles_mantenimiento')
+        ->join('reparaciones', 'detalles_mantenimiento.reparaciones_id', '=', 'reparaciones.id')
+        ->select('reparaciones.id', 'reparaciones.elemento', DB::raw('AVG(detalles_mantenimiento.costo) as promedio_costo'))
+        ->groupBy('reparaciones.id')
+        ->orderBy('reparaciones.id', 'asc') // Ordenar por ID de forma ascendente
+        ->get();
+
+    // Retornar los datos como JSON
+    return response()->json($promedios);
 }
 
 }
