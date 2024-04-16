@@ -246,8 +246,8 @@
                 });
                             
             function add(){
-                $('#maquinariasForm').trigger("reset");
-                $('#maquinariasModal').html("Add Maquinarias");
+                $('#MaquinariasForm').trigger("reset");
+                $('#MaquinariasModal').html("Add Maquinarias");
                 $('#maquinarias-modal').modal('show');
                 $('#id').val('');
             }   
