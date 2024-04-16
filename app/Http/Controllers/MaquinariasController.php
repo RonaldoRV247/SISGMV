@@ -11,7 +11,7 @@ use App\Models\Mantenimientos;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Datatables;
 
-class VehiculosController extends Controller
+class MaquinariasController extends Controller
 {
 
     public function index()
@@ -22,7 +22,7 @@ class VehiculosController extends Controller
         return datatables()->of(
             DB::table('vehiculos')
                 ->leftjoin('personas', 'vehiculos.personas_id', '=', 'personas.id')
-                ->where('vehiculos.placa', 'NOT LIKE', 'MAQ-%')
+                ->where('vehiculos.placa', 'LIKE', 'MAQ-%')
                 ->select(
                     'vehiculos.id',
                     'vehiculos.placa',
@@ -40,13 +40,13 @@ class VehiculosController extends Controller
         ->addColumn('estado', function ($vehiculo) {
             return $this->calcularEstado($vehiculo->id);
         })
-        ->addColumn('action', 'vehiculos-action')
+        ->addColumn('action', 'maquinarias-action')
         ->rawColumns(['action'])
         ->addIndexColumn()
         ->make(true);
     }
     
-    return view('vehiculos', compact('personas'));
+    return view('maquinarias', compact('personas'));
 }
 
     private function calcularEstado($vehiculoId)
@@ -74,7 +74,7 @@ class VehiculosController extends Controller
         ]);
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Ya existe un vehiculo con esa placa. Por favor, ingresa una placa diferente.'
+                'message' => 'Ya existe una maquinaria con esa identificación. Por favor, ingresa una diferente.'
             ], 422);
         };
         $vehiculosId = $request->id;
@@ -115,26 +115,26 @@ class VehiculosController extends Controller
     }
     public function print()
     {
-        // Obtener datos de vehículos que no son maquinarias pesadas
+        // Obtener datos de maquinarias pesadas
         $vehiculos = Vehiculos::with('personas')
-            ->where('placa', 'NOT LIKE', 'MAQ-%')
+            ->where('placa', 'LIKE', 'MAQ-%')
             ->get();
-    
+
         // Calcular el estado de cada vehículo
         foreach ($vehiculos as $vehiculo) {
             $vehiculo->estado = $this->calcularEstado($vehiculo->id);
         }
-    
+
         // Cargar la vista del reporte
-        $pdf = PDF::loadView('reports.vehiculos_report', compact('vehiculos'))
+        $pdf = PDF::loadView('reports.maquinarias_report', compact('vehiculos'))
             ->setPaper('a4', 'landscape');
         
         // Guardar el PDF en un archivo
-        $pdfPath = public_path('vehiculos_report.pdf');
+        $pdfPath = public_path('maquinarias_report.pdf');
         $pdf->save($pdfPath);
-    
+
         // Devuelve la URL del PDF
-        return response()->json(['url' => url('vehiculos_report.pdf')]);
+        return response()->json(['url' => url('maquinarias_report.pdf')]);
     }
-    
+
 }

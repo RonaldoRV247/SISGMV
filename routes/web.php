@@ -6,6 +6,7 @@ use App\Http\Controllers\ReparacionesController;
 use App\Http\Controllers\PersonasController;
 use App\Http\Controllers\VehiculosController;
 use App\Http\Controllers\MantenimientosController;
+use App\Http\Controllers\MaquinariasController;
 use App\Http\Controllers\DetallesMantenimientoController;
 use App\Http\Controllers\HomeController;
 
@@ -72,6 +73,12 @@ Route::post('vehiculos/store', [VehiculosController::class, 'store'])->middlewar
 Route::post('vehiculos/edit', [VehiculosController::class, 'edit'])->middleware('web');
 Route::post('vehiculos/delete', [VehiculosController::class, 'destroy'])->middleware('web');
 Route::post('vehiculos/print', [VehiculosController::class, 'print'])->middleware('web');
+//Rutas para vistas de maquinarias
+Route::get('maquinarias', [MaquinariasController::class, 'index']);
+Route::post('maquinarias/store', [MaquinariasController::class, 'store'])->middleware('web');
+Route::post('maquinarias/edit', [MaquinariasController::class, 'edit'])->middleware('web');
+Route::post('maquinarias/delete', [MaquinariasController::class, 'destroy'])->middleware('web');
+Route::post('maquinarias/print', [MaquinariasController::class, 'print'])->middleware('web');
 
 //Rutas para vistas de mantenimientos
 Route::get('mantenimientos', [MantenimientosController::class, 'index']);
