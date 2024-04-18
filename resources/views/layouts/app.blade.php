@@ -24,16 +24,40 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.rtl.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.rtl.min.css" />
    
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
 
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Incluir SweetAlert desde CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* HTML: <div class="loader"></div> */
+        .loader {    
+        --r1: 154%;
+        --r2: 68.5%;
+        width: 60px;
+        aspect-ratio: 1;
+        border-radius: 50%; 
+        background:
+            radial-gradient(var(--r1) var(--r2) at top   ,#0000 79.5%,#269af2 80%),
+            radial-gradient(var(--r1) var(--r2) at bottom,#269af2 79.5%,#0000 80%),
+            radial-gradient(var(--r1) var(--r2) at top   ,#0000 79.5%,#269af2 80%),
+            #ccc;
+        background-size: 50.5% 220%;
+        background-position: -100% 0%,0% 0%,100% 0%;
+        background-repeat:no-repeat;
+        animation: l9 1s infinite linear;
+        }
+        @keyframes l9 {
+            33%  {background-position:    0% 33% ,100% 33% ,200% 33% }
+            66%  {background-position: -100%  66%,0%   66% ,100% 66% }
+            100% {background-position:    0% 100%,100% 100%,200% 100%}
+        }
+    </style>
 
-    
-    
     @yield('styles')
 </head>@auth
 <body class="hold-transition sidebar-mini">
@@ -90,6 +114,7 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+
         @yield('content')
     </div>
     <!-- /.content-wrapper -->
@@ -108,6 +133,8 @@
         <!-- To the right -->
         <div class="float-right d-none d-sm-inline">
             Ronaldo Rivera - MUNIDI 2024
+        </div>
+        <div id="loading-spinner" class="loader" style="display: none; position: fixed; top: 90%; left: 50%; transform: translate(-50%, -50%); z-index: 1050;">
         </div>
         <!-- Default to the left -->
         <strong>Copyright &copy; 2014-2024 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.

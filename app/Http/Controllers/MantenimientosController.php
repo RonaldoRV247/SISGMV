@@ -67,13 +67,20 @@ class MantenimientosController extends Controller
             // Obtener el vehículo relacionado
         $vehiculo = Vehiculos::find($request->vehiculos_id);
         
-        // Validar si el km_mantenimiento es menor que el km actual del vehículo
+    // Obtener el mantenimiento existente si existe
+    $mantenimientos = Mantenimientos::find($request->id);
+    $kmMantenimientoActual = $mantenimientos ? $mantenimientos->km_mantenimiento : null;
+
+    // Validar si el km_mantenimiento en el request es diferente al actual
+    if ($request->has('km_mantenimiento') && $request->km_mantenimiento != $kmMantenimientoActual) {
+        // Verificar si el km_mantenimiento es menor que el km actual del vehículo
         if ($request->km_mantenimiento < $vehiculo->km) {
-            // Si el km_mantenimiento es menor que el km actual del vehículo, devolver un error o no realizar la actualización
+            // Si el km_mantenimiento es menor que el km actual del vehículo, devolver un error
             return response()->json([
                 'message' => 'El kilometraje del nuevo mantenimiento no puede ser menor que el km actual del vehículo.'
             ], 422);
         }
+    }
         $mantenimientosId = $request->id;
     
         $mantenimientos = Mantenimientos::updateOrCreate(

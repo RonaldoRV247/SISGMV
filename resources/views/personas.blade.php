@@ -121,7 +121,6 @@
             <!-- end bootstrap model -->
             <script type="text/javascript">
                 jQuery(document).ready( function () {
-
                     $.ajaxSetup({
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -154,36 +153,97 @@
                 });
             } 
             function imprimirFunc(id) {
+                $('#loading-spinner').show();
                 $.ajax({
                     type: "POST",
                     url: "{{ url('personas/print')}}",
                     data: { id: id },
                     success: function(response) {
-                        // Abre una nueva ventana con la URL del PDF
-                        window.open(response.url, '_blank');
+                        $('#loading-spinner').hide();
+                        Swal.fire({
+                            title: 'Éxito',
+                            text: 'El reporte se generó con éxito.',
+                            icon: 'success',
+                            confirmButtonText: 'Ver PDF'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Abre una nueva ventana con la URL del PDF
+                                window.open(response.url, '_blank');
+                            }
+                        })
                     },
                     error: function(xhr, status, error) {
+                        // Ocultar el indicador de carga
+                        $('#loading-spinner').hide();
+                        // Mostrar un mensaje de error con SweetAlert
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ocurrió un error al intentar imprimir el registro.',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
                         console.error(xhr.responseText);
                     }
                 });
             }
             
             function deleteFunc(id){
-                if (confirm("¿Borrar Registro? \nRecuerde que para eliminar a un operario, este no debe tener ningún vehículo asignado. ") == true) {
-                    var id = id;
-                    // ajax
-                    $.ajax({
-                        type:"POST",
-                        url: "{{ url('personas/delete') }}",
-                        data: { id: id },
-                        dataType: 'json',
-                        success: function(res){
-                            var tableex = new DataTable('#personas');
-                            tableex.ajax.reload();
-                            tableex.draw(false);
-                        }
-                    });
-                }
+                Swal.fire({
+                    title: '¿Borrar Registro?',
+                    html: '¡No podrás revertir esto!<br>Recuerde que para eliminar un operario no debe tener ningún vehículo asignado.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type:"POST",
+                            url: "{{ url('personas/delete') }}",
+                            data: { id: id },
+                            dataType: 'json',
+                            success: function(res){
+                                var tableex = new DataTable('#personas');
+                                tableex.ajax.reload();
+                                tableex.draw(false);
+
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: "top-end",
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.onmouseenter = Swal.stopTimer;
+                                        toast.onmouseleave = Swal.resumeTimer;
+                                    }
+                                    });
+                                    Toast.fire({
+                                    icon: "success",
+                                    title: "Se eliminó el registro exitosamente"
+                                    });
+                            },
+                            error: function(xhr, status, error){
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: "top-end",
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.onmouseenter = Swal.stopTimer;
+                                        toast.onmouseleave = Swal.resumeTimer;
+                                    }
+                                    });
+                                    Toast.fire({
+                                    icon: "error",
+                                    title: "Hubo un problema al eliminar el registro."
+                                    });
+                                    console.error(xhr.responseText);
+                            }
+                        });
+                    }
+                });
             }
             
             jQuery('#PersonasForm').submit(function(e) {
@@ -198,9 +258,22 @@
                     processData: false,
 
                     success: (data) => {
+                        const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                        });
+                        Toast.fire({
+                        icon: "success",
+                        title: "Acción exitosa"
+                        });
                         $("#personas-modal").modal('hide');
-                        /*var onTable = $('#personas').dataTable()._fnAjaxUpdate();
-                        onTable.fnDraw(false);*/
                         var tableex = new DataTable('#personas');
                             tableex.ajax.reload();
                             tableex.draw(false);
@@ -208,8 +281,23 @@
                         $("#btn-guardar").html('Guardar');
                         $("#btn-guardar"). attr("disabled", false);
                     },
-                    error: function(data){
-                        console.log(data);
+                    error: function(xhr) {
+                        var errorMessage = JSON.parse(xhr.responseText).message;
+                        const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                        });
+                        Toast.fire({
+                        icon: "error",
+                        title: "Error al registrar:"+ errorMessage
+                        });
                     }
                 });
             });

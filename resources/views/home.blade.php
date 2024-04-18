@@ -63,9 +63,6 @@ jQuery(document).ready(function($) {
     });
 });
 </script>
-
-
-
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -89,7 +86,7 @@ jQuery(document).ready(function($) {
                 <div class="small-box bg-info">
                     <div class="inner">
                         <h3>{{ $vehiculosCount }}</h3>
-                        <p>Vehículos</p>
+                        <p>Motorizados</p>
                     </div>
                     <div class="icon">
 					<i class="fas fa-car-side"></i>
@@ -277,20 +274,49 @@ jQuery(document).ready(function($) {
 			}
 		});
 	});
-	function imprimirFunc(id) {
-		$.ajax({
-			type: "POST",
-			url: "{{ url('home/print')}}",
-			data: { id: id },
-			success: function(response) {
-				// Abre una nueva ventana con la URL del PDF
-				window.open(response.url, '_blank');
-			},
-			error: function(xhr, status, error) {
-				console.error(xhr.responseText);
-			}
-		});
-	}
+    function imprimirFunc(id) {
+    // Mostrar el indicador de carga
+    $('#loading-spinner').show();
+
+    $.ajax({
+        type: "POST",
+        url: "{{ url('home/print') }}",
+        data: { id: id },
+        success: function(response) {
+            // Ocultar el indicador de carga
+            $('#loading-spinner').hide();
+
+            // Mostrar un mensaje de éxito con SweetAlert
+            Swal.fire({
+                title: 'Éxito',
+                text: 'El reporte se generó con éxito.',
+                icon: 'success',
+                confirmButtonText: 'Ver PDF'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Abre una nueva ventana con la URL del PDF
+                    window.open(response.url, '_blank');
+                }
+            });
+        },
+        error: function(xhr, status, error) {
+            // Ocultar el indicador de carga
+            $('#loading-spinner').hide();
+
+            // Mostrar un mensaje de error con SweetAlert
+            Swal.fire({
+                title: 'Error',
+                text: 'Ocurrió un error al intentar imprimir el registro.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+
+            console.error(xhr.responseText);
+        }
+    });
+}
+
+
 </script>
 <script type="text/javascript">
     let graficoMantenimientos = null; // Variable global para almacenar el gráfico
@@ -370,6 +396,7 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 // Cargar el gráfico con los datos obtenidos
                 cargarGrafico(response);
+
             },
             error: function(xhr, status, error) {
                 console.error(xhr.responseText);
@@ -383,7 +410,26 @@ jQuery(document).ready(function($) {
             // Obtener las fechas del formulario
             var fechaInicio = $('#fecha_inicio').val();
             var fechaFin = $('#fecha_fin').val();
-
+            if (new Date(fechaInicio) > new Date(fechaFin)) {
+                // Mostrar una notificación de error con Toastr
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                    });
+                    Toast.fire({
+                    icon: "warning",
+                    title: "La fecha de inicio no puede ser mayor a la fecha de fin."
+                    });
+                // Detener la ejecución de la función para evitar hacer la solicitud AJAX
+                return;
+            }
             // Realizar la solicitud AJAX para obtener los datos del gráfico con el rango de fechas especificado
             $.ajax({
                 url: '{{ url("home/obtener_datos_grafico") }}',
@@ -394,12 +440,42 @@ jQuery(document).ready(function($) {
                 },
                 success: function(response) {
                     // Cargar el gráfico con los datos obtenidos
+                    const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                    });
+                    Toast.fire({
+                    icon: "success",
+                    title: "Se aplicó el rango de fechas."
+                    });
                     cargarGrafico(response);
                     $('#fecha_inicio').val('');
                     $('#fecha_fin').val('');
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
+                    const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                    });
+                    Toast.fire({
+                    icon: "success",
+                    title: "Hubo un error en el rango de fechas."
+                    });
                 }
             });
         });
@@ -504,6 +580,26 @@ var tablaHTML = `<table><thead class="table-dark text-center"><tr><th>Tipo de Ma
 
         var fechaInicio2 = $('#fecha_inicio2').val();
         var fechaFin2 = $('#fecha_fin2').val();
+        if (new Date(fechaInicio2) > new Date(fechaFin2)) {
+                // Mostrar una notificación de error con Toastr
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                    });
+                    Toast.fire({
+                    icon: "warning",
+                    title: "La fecha de inicio no puede ser mayor a la fecha de fin."
+                    });
+                // Detener la ejecución de la función para evitar hacer la solicitud AJAX
+                return;
+            }
 
         $.ajax({
             url: '{{ url("home/obtener_datos_grafico2") }}',
@@ -513,12 +609,42 @@ var tablaHTML = `<table><thead class="table-dark text-center"><tr><th>Tipo de Ma
                 fecha_fin2: fechaFin2
             },
             success: function(response) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                    });
+                    Toast.fire({
+                    icon: "success",
+                    title: "Se aplicó el rango de fechas."
+                    });
                 cargarGrafico2(response);
                 $('#fecha_inicio2').val('');
                 $('#fecha_fin2').val('');
             },
             error: function(xhr, status, error) {
                 console.error(xhr.responseText);
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                    });
+                    Toast.fire({
+                    icon: "error",
+                    title: "Hubo un error aplicando el rango de fechas."
+                    });
             }
         });
     });
