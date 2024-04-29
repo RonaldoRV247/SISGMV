@@ -9,7 +9,12 @@
     .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option[role=group] .select2-results__group {
     color: blue !important;
     font-size: 18px !important;
+
 }
+
+.popuphistorial {
+        width: 60% !important;
+    }
     </style>
     <script src="{{ asset('js/mantenimientos.js') }}"></script>
 
@@ -407,59 +412,83 @@
             }
 
             jQuery('#MantenimientosForm').submit(function(e) {
-            e.preventDefault();
-            var formData = new FormData(this);
-            $.ajax({
-                type:'POST',
-                url: urlmantenimientosstore,
-                data: formData,
-                cache:false,
-                contentType: false,
-                processData: false,
-
-                success: (data) => {
-                    const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                    }
-                    });
-                    Toast.fire({
-                    icon: "success",
-                    title: "Acción exitosa."
-                    });
-                    $("#mantenimientos-modal").modal('hide');
-                    var tableex = new DataTable('#mantenimientos');
+                e.preventDefault();
+                var formData = new FormData(this);
+                $.ajax({
+                    type:'POST',
+                    url: urlmantenimientosstore,
+                    data: formData,
+                    cache:false,
+                    contentType: false,
+                    processData: false,
+                    success: function(response){
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: "success",
+                            title: "Acción exitosa."
+                        });
+                        $("#mantenimientos-modal").modal('hide');
+                        var tableex = new DataTable('#mantenimientos');
                         tableex.ajax.reload();
                         tableex.draw(false);
-                    $("#btn-guardar").html('Guardar');
-                    $("#btn-guardar"). attr("disabled", false);
-                },
-                error: function(xhr) {
-                    var errorMessage = JSON.parse(xhr.responseText).message;
-                    const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
+                        $("#btn-guardar").html('Guardar');
+                        $("#btn-guardar").attr("disabled", false);
+                        if (response.reparacionesRealizadas.length > 0) {
+                            // Construir la tabla HTML con los datos de reparaciones repetidas
+                            var tableHTML = '<table class="table"><thead><tr><th>REPARACIÓN</th><th>FECHA DE REQUERIMIENTO</th><th>TIPO DE MANTENIMIENTO</th><th>EXPEDIENTE</th></tr></thead><tbody>';
+                            // Iterar sobre los datos de reparaciones repetidas
+                            for (var i = 0; i < response.reparacionesRealizadas.length; i++) {
+                                var nombre = response.nombresReparaciones[i];
+                                for (var j = 0; j < response.infoMantenimientosPasados.length; j++) {
+                                    var infoMantenimiento = response.infoMantenimientosPasados[j];
+                                    // Agregar una fila a la tabla para cada reparación repetida
+                                tableHTML += '<tr><td>' + nombre + '</td><td>' + infoMantenimiento.fecha_requerimiento + '</td><td>' + infoMantenimiento.tipo + '</td><td>' + infoMantenimiento.expediente + '</td></tr>';
+                            
+                                }
+                                }
+                            // Cerrar la tabla HTML
+                            tableHTML += '</tbody></table>';
+                            // Mostrar una alerta utilizando SweetAlert con la tabla HTML
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Historial de reparaciones reincidentes',
+                                html: tableHTML,
+                                customClass: 'popuphistorial'
+                            });
+                        }
+
+                    },
+                    error: function(xhr) {
+                        var errorMessage = JSON.parse(xhr.responseText).message;
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: "error",
+                            title: "Error al registrar:"+ errorMessage
+                        });
                     }
-                    });
-                    Toast.fire({
-                    icon: "error",
-                    title: "Error al registrar:"+ errorMessage
-                    });
-                }
+                });
             });
-            });
+
             </script>
                 </div>   
             </div><!--Row-->

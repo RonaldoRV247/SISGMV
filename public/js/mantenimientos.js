@@ -4,8 +4,7 @@ var urlmantenimientosedit = '/mantenimientos/edit';
 var urlmantenimientosdelete = '/mantenimientos/delete';
 var urlmantenimientosstore = '/mantenimientos/store';
 var urlmantenimientosprint = '/mantenimientos/print';
-var urlmantenimientosprintgen = '/mantenimientos/printgen';
-        
+var urlmantenimientosprintgen = '/mantenimientos/printgen';    
 
 jQuery( document ).ready(function( $ ) {
     

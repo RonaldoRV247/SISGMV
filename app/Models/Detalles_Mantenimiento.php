@@ -16,5 +16,9 @@ class Detalles_Mantenimiento extends Model
     {
         return $this->belongsTo(Reparaciones::class, 'reparaciones_id');
     }
+    public function mantenimiento()
+    {
+        return $this->belongsTo(Mantenimientos::class, 'mantenimientos_id');
+    }
 
 }
