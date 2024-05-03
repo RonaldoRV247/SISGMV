@@ -304,12 +304,13 @@ public function obtenerPromedioPreciosReparaciones() {
     $promedios = DB::table('detalles_mantenimiento')
         ->join('reparaciones', 'detalles_mantenimiento.reparaciones_id', '=', 'reparaciones.id')
         ->select('reparaciones.id', 'reparaciones.elemento', DB::raw('AVG(detalles_mantenimiento.costo) as promedio_costo'))
-        ->groupBy('reparaciones.id')
+        ->groupBy('reparaciones.id', 'reparaciones.elemento') // Agregar 'reparaciones.elemento' a la cláusula GROUP BY
         ->orderBy('reparaciones.id', 'asc') // Ordenar por ID de forma ascendente
         ->get();
 
     // Retornar los datos como JSON
     return response()->json($promedios);
 }
+
 
 }

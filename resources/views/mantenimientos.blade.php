@@ -453,7 +453,6 @@
                                     var infoMantenimiento = response.infoMantenimientosPasados[j];
                                     // Agregar una fila a la tabla para cada reparación repetida
                                 tableHTML += '<tr><td>' + nombre + '</td><td>' + infoMantenimiento.fecha_requerimiento + '</td><td>' + infoMantenimiento.tipo + '</td><td>' + infoMantenimiento.expediente + '</td></tr>';
-                            
                                 }
                                 }
                             // Cerrar la tabla HTML
