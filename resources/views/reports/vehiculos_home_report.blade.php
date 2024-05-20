@@ -94,101 +94,113 @@
         </tbody>
     </table><br>
     <h5 class="text-center" style="font-family: Arial, sans-serif; font-weight: bold;">Historial de Mantenimientos</h5><br>
-            <table class="table table-sm table-striped table-bordered">
-                <thead class="thead-dark text-center">
-                    <tr>
-                        <th colspan="10">Datos generales de los Mantenimientos</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="text-center thead-dark">
-                        <th style="font-weight: bold;">ID</th>
-                        <th style="font-weight: bold;">Tipo</th>
-                        <th style="font-weight: bold;">Expediente</th>
-                        <th style="font-weight: bold;">Fecha de Requerimiento</th>
-                        <th style="font-weight: bold;">Fecha de Conformidad de Servicio</th>
-                        <th style="font-weight: bold;">Ingreso al Taller</th>
-                        <th style="font-weight: bold;">Salida del Taller</th>
-                        <th style="font-weight: bold;">Kilometraje</th>
-                        <th style="font-weight: bold;">Proveedor</th>
-                        <th style="font-weight: bold;">Estado</th>
-                    </tr>
-                    @foreach ($vehiculo->mantenimientos as $mantenimiento)
+        <table class="table table-sm table-striped table-bordered">
+            <thead class="thead-dark text-center">
+                <tr>
+                    <th colspan="10">Datos generales de los Mantenimientos</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="text-center thead-dark">
+                    <th style="font-weight: bold;">ID</th>
+                    <th style="font-weight: bold;">Tipo</th>
+                    <th style="font-weight: bold;">Expediente</th>
+                    <th style="font-weight: bold;">Fecha de Requerimiento</th>
+                    <th style="font-weight: bold;">Fecha de Conformidad de Servicio</th>
+                    <th style="font-weight: bold;">Ingreso al Taller</th>
+                    <th style="font-weight: bold;">Salida del Taller</th>
+                    <th style="font-weight: bold;">Kilometraje</th>
+                    <th style="font-weight: bold;">Proveedor</th>
+                    <th style="font-weight: bold;">Estado</th>
+                </tr>
+                @foreach ($vehiculo->mantenimientos as $mantenimiento)
+                <tr>
+                    <td>{{ $mantenimiento->id }}</td>
+                    <td>{{ $mantenimiento->tipo }}</td>
+                    <td>{{ $mantenimiento->expediente }}</td>
+                    <td>{{ $mantenimiento->fecha_requerimiento }}</td>
+                    <td>{{ $mantenimiento->fecha_conformidad_servicio }}</td>
+                    <td>{{ $mantenimiento->fecha_ingreso_taller }}</td>
+                    <td>{{ $mantenimiento->fecha_salida_taller }}</td>
+                    <td>{{ $mantenimiento->km_mantenimiento }}</td>
+                    <td>RUC: {{ $mantenimiento->proveedor->ruc }} - {{ $mantenimiento->proveedor->nombre }}</td>
+                    <td class="text-center"><span class="badge {{ $mantenimiento->estado_class }}">{{ $mantenimiento->estado }}</span></td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <br>
+        <h5 class="text-center" style="font-family: Arial, sans-serif; font-weight: bold;">Detalle de los Mantenimientos</h5><br>
+        <table class="table table-sm table-bordered">
+            <thead class="thead-dark text-center">
+                <tr>
+                    <th colspan="5">Mantenimientos</th>
+                    <th colspan="5">Datos de las reparaciones</th>
+                </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo</th>
+                    <th>Expediente</th>
+                    <th>Proveedor</th>
+                    <th>Estado</th>
+                    <th>ID</th>
+                    <th>Reparacion</th>
+                    <th>Descripcion</th>
+                    <th>Costo</th>
+                    <th>Totales</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($vehiculo->mantenimientos as $index => $mantenimiento)
+                    <!-- Primera fila para los datos generales del mantenimiento -->
                     <tr>
                         <td>{{ $mantenimiento->id }}</td>
                         <td>{{ $mantenimiento->tipo }}</td>
                         <td>{{ $mantenimiento->expediente }}</td>
-                        <td>{{ $mantenimiento->fecha_requerimiento }}</td>
-                        <td>{{ $mantenimiento->fecha_conformidad_servicio }}</td>
-                        <td>{{ $mantenimiento->fecha_ingreso_taller }}</td>
-                        <td>{{ $mantenimiento->fecha_salida_taller }}</td>
-                        <td>{{ $mantenimiento->km_mantenimiento }}</td>
                         <td>RUC: {{ $mantenimiento->proveedor->ruc }} - {{ $mantenimiento->proveedor->nombre }}</td>
                         <td class="text-center"><span class="badge {{ $mantenimiento->estado_class }}">{{ $mantenimiento->estado }}</span></td>
+                        <!-- Espacio para los datos de la primera reparación -->
+                        @if($mantenimiento->detallesMantenimiento->isNotEmpty())
+                            <td>{{ $mantenimiento->detallesMantenimiento->first()->id }}</td>
+                            <td>{{ $mantenimiento->detallesMantenimiento->first()->reparacion->elemento }}</td>
+                            <td>{{ $mantenimiento->detallesMantenimiento->first()->descripcion ?? '' }}</td>
+                            <td style="text-align:right;">{{ number_format($mantenimiento->detallesMantenimiento->first()->costo, 2, ',', '.') }} S/.</td>
+                            <td rowspan="{{ $mantenimiento->detallesMantenimiento->count()+1 }}" style="text-align:right;">{{ number_format($mantenimiento->detallesMantenimiento->sum('costo'), 2, ',', '.') }} S/.</td>
+                        @else
+                            <!-- Si no hay reparaciones, dejar celdas vacías -->
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        @endif
                     </tr>
+                    <!-- Filas adicionales para las reparaciones -->
+                    @foreach ($mantenimiento->detallesMantenimiento as $detalle)
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>{{ $detalle->id }}</td>
+                            <td>{{ $detalle->reparacion->elemento }}</td>
+                            <td>{{ $detalle->descripcion ?? '' }}</td>
+                            <td style="text-align:right;">{{ number_format($detalle->costo, 2, ',', '.') }} S/.</td>
+                        </tr>
                     @endforeach
-                </tbody>
-            </table>
-            <br>
-            <h5 class="text-center" style="font-family: Arial, sans-serif; font-weight: bold;">Detalle de los Mantenimientos</h5><br>
-            <table class="table table-sm table-bordered">
-                <thead class="thead-dark text-center">
+                    <!-- Fila separadora -->
                     <tr>
-                        <th colspan="10">Datos específicos de los mantenimientos</th>
-                    </tr>
-                    <tr>
-                        <th rowspan="2" style="font-weight: bold;">ID</th>
-                        <th rowspan="2" style="font-weight: bold;">Tipo</th>
-                        <th rowspan="2" style="font-weight: bold;">Expediente</th>
-                        <th rowspan="2" style="font-weight: bold;width:20%;">Proveedor</th>
-                        <th rowspan="2" style="font-weight: bold;">Estado</th>
-                        <th colspan="4" style="font-weight: bold;">Datos de las reparaciones</th>
-                        <th rowspan="2" style="font-weight: bold;">&nbsp;&nbsp;&nbsp;&nbsp; Totales &nbsp;&nbsp;&nbsp;&nbsp;</th>
-                    </tr>
-                    <tr>
-                        <th style="font-weight: bold;">ID</th>
-                        <th style="font-weight: bold;">Reparacion</th>
-                        <th style="font-weight: bold;">Descripcion</th>
-                        <th style="font-weight: bold;">Costo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @foreach ($vehiculo->mantenimientos as $mantenimiento)
-                    <tr>
-                        <td rowspan="{{ $mantenimiento->detallesMantenimiento->count() }}">{{ $mantenimiento->id }}</td>
-                        <td rowspan="{{ $mantenimiento->detallesMantenimiento->count() }}">{{ $mantenimiento->tipo }}</td>
-                        <td rowspan="{{ $mantenimiento->detallesMantenimiento->count() }}">{{ $mantenimiento->expediente }}</td>
-                        <td rowspan="{{ $mantenimiento->detallesMantenimiento->count() }}">RUC: {{ $mantenimiento->proveedor->ruc }} - {{ $mantenimiento->proveedor->nombre }}</td>
-                        <td rowspan="{{ $mantenimiento->detallesMantenimiento->count() }}" class="text-center"><span class="badge {{ $mantenimiento->estado_class }}">{{ $mantenimiento->estado }}</span></td>
-                        @foreach ($mantenimiento->detallesMantenimiento as $index => $detalle)
-                            @if ($index === 0)
-                                <!-- Columnas de reparaciones solo para la primera fila -->
-                                <td>{{ $detalle->id }}</td>
-                                <td>{{ $detalle->reparacion->elemento }}</td>
-                                <td>{{ $detalle->descripcion ?? '' }}</td>
-                                <td style="text-align:right;">{{ number_format($detalle->costo, 2, ',', '.') }} S/.</td>
-                                <td style="text-align:right;" rowspan="{{ $mantenimiento->detallesMantenimiento->count() }}">{{ number_format($mantenimiento->detallesMantenimiento->sum('costo'), 2, ',', '.') }} S/.</td>
-                            @else
-                                <!-- Columnas vacías para las filas adicionales de reparaciones -->
-                                <tr>
-                                    <td>{{ $detalle->id }}</td>
-                                    <td>{{ $detalle->reparacion->elemento }}</td>
-                                    <td>{{ $detalle->descripcion ?? '' }}</td>
-                                    <td style="text-align:right;">{{ number_format($detalle->costo, 2, ',', '.') }} S/.</td>
-                                </tr>
-                            @endif
-                        @endforeach
+                        <td colspan="10" style="height: 10px; background-color: #f5f5f5;"></td>
                     </tr>
                 @endforeach
-                <!-- Fila para el total invertido en todos los mantenimientos -->
+                <!-- Fila para el total invertido en todos los mantenimientos historicos -->
                 <tr>
                     <td colspan="9" style="text-align: center; font-weight: bold;">Total invertido en los mantenimientos historicos:</td>
                     <td style="text-align: right; font-weight: bold;">{{ number_format($vehiculo->mantenimientos->flatMap->detallesMantenimiento->sum('costo'), 2, ',', '.') }} S/.</td>
                 </tr>
-                </tbody>
-            </table>
-
-
+            </tbody>
+        </table>
 </div>
 <script type="text/php">
         if ( isset($pdf) ) {
