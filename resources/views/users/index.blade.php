@@ -27,21 +27,26 @@
                         <div class="card-body p-0">
 
                         <table class="table table-bordered table-hover" id="usuarios" style="width:100%;text-align: center;">
-                        <thead class="table-dark" style="width:100%;text-align: center;">
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Email</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($users as $user)
-                                    <tr>
-                                        <td>{{ $user->name }}</td>
-                                        <td>{{ $user->email }}</td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                            <thead class="table-dark" style="width:100%;text-align: center;">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Acciones</th> <!-- Nueva columna para acciones -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($users as $user)
+                                <tr>
+                                    <td>{{ $user->name }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>
+                                        <!-- Enlace para editar roles -->
+                                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary">Editar Roles</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
                         </div>
                         <!-- /.card-body -->
 

@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProveedoresController;
 use App\Http\Controllers\ReparacionesController;
@@ -7,19 +6,8 @@ use App\Http\Controllers\PersonasController;
 use App\Http\Controllers\VehiculosController;
 use App\Http\Controllers\MantenimientosController;
 use App\Http\Controllers\MaquinariasController;
-use App\Http\Controllers\DetallesMantenimientoController;
 use App\Http\Controllers\HomeController;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,64 +15,65 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::view('about', 'about')->name('about');
-
-    Route::get('users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
-
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
-    Route::put('profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
-    
-//Rutas para home
-Route::get('home/datatable', [HomeController::class, 'vehiculosDatatable'])->name('home.datatable');
-Route::post('home/print',[HomeController::class,'print'])->middleware('web');
-Route::get('home/obtener_datos_grafico',[HomeController::class,'obtenerDatosGrafico'])->middleware('web');
-Route::get('home/obtener_datos_grafico2',[HomeController::class,'obtenerDatosGrafico2'])->middleware('web');
-Route::get('home/obtener_vehiculos_reincidentes',[HomeController::class,'obtenerVehiculosReincidentes'])->middleware('web');
-Route::get('home/obtener_reparaciones_frecuentes',[HomeController::class,'obtenerReparacionesFrecuentes'])->middleware('web');
-Route::get('home/obtener_promedio_precios_reparaciones',[HomeController::class,'obtenerPromedioPreciosReparaciones'])->middleware('web');
-//Rutas para vistas de proveedores
-Route::get('proveedores', [ProveedoresController::class, 'index']);
-Route::post('proveedores/store', [ProveedoresController::class, 'store'])->middleware('web');
-Route::post('proveedores/edit', [ProveedoresController::class, 'edit'])->middleware('web');
-Route::post('proveedores/delete', [ProveedoresController::class, 'destroy'])->middleware('web');
-Route::post('proveedores/print', [ProveedoresController::class, 'print'])->middleware('web');
+    Route::post('profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
 
-//Rutas para vistas de reparaciones
-Route::get('reparaciones', [ReparacionesController::class, 'index']);
-Route::post('reparaciones/store', [ReparacionesController::class, 'store'])->middleware('web');
-Route::post('reparaciones/edit', [ReparacionesController::class, 'edit'])->middleware('web');
-Route::post('reparaciones/delete', [ReparacionesController::class, 'destroy'])->middleware('web');
-Route::post('reparaciones/print',[ReparacionesController::class,'print'])->middleware('web');
+        Route::get('users/{userId}/edit', [UserController::class, 'edit'])->name('users.edit')->middleware('role:administrador');
+        Route::post('users/{userId}/update-roles', [UserController::class, 'updateRoles'])->name('users.updateRoles')->middleware('role:administrador');
 
-//Rutas para vistas de personas
-Route::get('personas', [PersonasController::class, 'index']);
-Route::post('personas/store', [PersonasController::class, 'store'])->middleware('web');
-Route::post('personas/edit', [PersonasController::class, 'edit'])->middleware('web');
-Route::post('personas/delete', [PersonasController::class, 'destroy'])->middleware('web');
-Route::post('personas/print', [PersonasController::class, 'print'])->middleware('web');
+        Route::get('home/datatable', [HomeController::class, 'vehiculosDatatable'])->name('home.datatable')->middleware('role:administrador|usuario|visualizador');
+        Route::post('home/print', [HomeController::class, 'print'])->middleware('role:administrador|usuario|visualizador');
+        Route::get('home/obtener_datos_grafico', [HomeController::class, 'obtenerDatosGrafico'])->middleware('role:administrador|usuario|visualizador');
+        Route::get('home/obtener_datos_grafico2', [HomeController::class, 'obtenerDatosGrafico2'])->middleware('role:administrador|usuario|visualizador')->middleware('role:administrador|usuario|visualizador');
+        Route::get('home/obtener_vehiculos_reincidentes', [HomeController::class, 'obtenerVehiculosReincidentes'])->middleware('role:administrador|usuario|visualizador');
+        Route::get('home/obtener_reparaciones_frecuentes', [HomeController::class, 'obtenerReparacionesFrecuentes'])->middleware('role:administrador|usuario|visualizador');
+        Route::get('home/obtener_promedio_precios_reparaciones', [HomeController::class, 'obtenerPromedioPreciosReparaciones'])->middleware('role:administrador|usuario|visualizador');
 
-//Rutas para vistas de vehiculos
-Route::get('vehiculos', [VehiculosController::class, 'index']);
-Route::post('vehiculos/store', [VehiculosController::class, 'store'])->middleware('web');
-Route::post('vehiculos/edit', [VehiculosController::class, 'edit'])->middleware('web');
-Route::post('vehiculos/delete', [VehiculosController::class, 'destroy'])->middleware('web');
-Route::post('vehiculos/print', [VehiculosController::class, 'print'])->middleware('web');
-//Rutas para vistas de maquinarias
-Route::get('maquinarias', [MaquinariasController::class, 'index']);
-Route::post('maquinarias/store', [MaquinariasController::class, 'store'])->middleware('web');
-Route::post('maquinarias/edit', [MaquinariasController::class, 'edit'])->middleware('web');
-Route::post('maquinarias/delete', [MaquinariasController::class, 'destroy'])->middleware('web');
-Route::post('maquinarias/print', [MaquinariasController::class, 'print'])->middleware('web');
+        // Rutas para vistas de proveedores
+        Route::get('proveedores', [ProveedoresController::class, 'index'])->middleware('role:administrador|usuario|visualizador');
+        Route::post('proveedores/store', [ProveedoresController::class, 'store'])->middleware('role:administrador|usuario');
+        Route::post('proveedores/edit', [ProveedoresController::class, 'edit'])->middleware('role:administrador|usuario');
+        Route::post('proveedores/delete', [ProveedoresController::class, 'destroy'])->middleware('role:administrador|usuario');
+        Route::post('proveedores/print', [ProveedoresController::class, 'print'])->middleware('role:administrador|usuario|visualizador');
 
-//Rutas para vistas de mantenimientos
-Route::get('mantenimientos', [MantenimientosController::class, 'index']);
-Route::post('mantenimientos/store', [MantenimientosController::class, 'store'])->middleware('web');
-Route::post('mantenimientos/edit', [MantenimientosController::class, 'edit'])->middleware('web');
-Route::post('mantenimientos/delete', [MantenimientosController::class, 'destroy'])->middleware('web');
-Route::post('mantenimientos/print', [MantenimientosController::class, 'print'])->middleware('web');
-Route::post('mantenimientos/printgen', [MantenimientosController::class, 'printgen'])->middleware('web');
+        // Rutas para vistas de reparaciones
+        Route::get('reparaciones', [ReparacionesController::class, 'index'])->middleware('role:administrador|usuario|visualizador');
+        Route::post('reparaciones/store', [ReparacionesController::class, 'store'])->middleware('role:administrador|usuario');
+        Route::post('reparaciones/edit', [ReparacionesController::class, 'edit'])->middleware('role:administrador|usuario');
+        Route::post('reparaciones/delete', [ReparacionesController::class, 'destroy'])->middleware('role:administrador|usuario');
+        Route::post('reparaciones/print', [ReparacionesController::class, 'print'])->middleware('role:administrador|usuario|visualizador');
+
+        // Rutas para vistas de personas
+        Route::get('personas', [PersonasController::class, 'index'])->middleware('role:administrador|usuario|visualizador');
+        Route::post('personas/store', [PersonasController::class, 'store'])->middleware('role:administrador|usuario');
+        Route::post('personas/edit', [PersonasController::class, 'edit'])->middleware('role:administrador|usuario');
+        Route::post('personas/delete', [PersonasController::class, 'destroy'])->middleware('role:administrador|usuario');
+        Route::post('personas/print', [PersonasController::class, 'print'])->middleware('role:administrador|usuario|visualizador');
+
+        // Rutas para vistas de vehículos
+        Route::get('vehiculos', [VehiculosController::class, 'index'])->middleware('role:administrador|usuario|visualizador');
+        Route::post('vehiculos/store', [VehiculosController::class, 'store'])->middleware('role:administrador|usuario');
+        Route::post('vehiculos/edit', [VehiculosController::class, 'edit'])->middleware('role:administrador|usuario');
+        Route::post('vehiculos/delete', [VehiculosController::class, 'destroy'])->middleware('role:administrador|usuario');
+        Route::post('vehiculos/print', [VehiculosController::class, 'print'])->middleware('role:administrador|usuario|visualizador');
+
+        // Rutas para vistas de maquinarias
+        Route::get('maquinarias', [MaquinariasController::class, 'index'])->middleware('role:administrador|usuario|visualizador');
+        Route::post('maquinarias/store', [MaquinariasController::class, 'store'])->middleware('role:administrador|usuario');
+        Route::post('maquinarias/edit', [MaquinariasController::class, 'edit'])->middleware('role:administrador|usuario');
+        Route::post('maquinarias/delete', [MaquinariasController::class, 'destroy'])->middleware('role:administrador|usuario');
+        Route::post('maquinarias/print', [MaquinariasController::class, 'print'])->middleware('role:administrador|usuario|visualizador');
+
+        // Rutas para vistas de mantenimientos
+        Route::get('mantenimientos', [MantenimientosController::class, 'index'])->middleware('role:administrador|usuario|visualizador');
+        Route::post('mantenimientos/store', [MantenimientosController::class, 'store'])->middleware('role:administrador|usuario');
+        Route::post('mantenimientos/edit', [MantenimientosController::class, 'edit'])->middleware('role:administrador|usuario');
+        Route::post('mantenimientos/delete', [MantenimientosController::class, 'destroy'])->middleware('role:administrador|usuario');
+        Route::post('mantenimientos/print', [MantenimientosController::class, 'print'])->middleware('role:administrador|usuario|visualizador');
+        Route::post('mantenimientos/printgen', [MantenimientosController::class, 'printgen'])->middleware('role:administrador|usuario|visualizador');
 });

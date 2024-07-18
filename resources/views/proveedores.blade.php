@@ -214,6 +214,13 @@
                                     });
                             },
                             error: function(xhr, status, error){
+                                if (xhr.status === 403) {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Permiso denegado',
+                                        text: xhr.responseJSON.error || 'No tienes permiso para realizar esta acción.'
+                                    });
+                                } else {
                                 const Toast = Swal.mixin({
                                     toast: true,
                                     position: "top-end",
@@ -230,7 +237,7 @@
                                     title: "Hubo un problema al eliminar el registro."
                                     });
                                     console.error(xhr.responseText);
-                            }
+                                }}
                         });
                     }
                 });
