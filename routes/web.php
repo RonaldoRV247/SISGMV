@@ -19,12 +19,16 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::view('about', 'about')->name('about');
-    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::get('users', [UserController::class, 'index'])->name('users.index')->middleware('role:administrador');
     Route::get('profile', [\App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
-    Route::post('profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::put('profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    
 
         Route::get('users/{userId}/edit', [UserController::class, 'edit'])->name('users.edit')->middleware('role:administrador');
         Route::post('users/{userId}/update-roles', [UserController::class, 'updateRoles'])->name('users.updateRoles')->middleware('role:administrador');
+        Route::post('users', [UserController::class, 'store'])->name('users.store')->middleware('role:administrador');
+        Route::delete('users/{userId}', [UserController::class, 'destroy'])->name('users.destroy')->middleware('role:administrador');
+        Route::post('users/{userId}/reset-password', [UserController::class, 'resetPassword'])->name('users.resetPassword')->middleware('auth');
 
         Route::get('home/datatable', [HomeController::class, 'vehiculosDatatable'])->name('home.datatable')->middleware('role:administrador|usuario|visualizador');
         Route::post('home/print', [HomeController::class, 'print'])->middleware('role:administrador|usuario|visualizador');
