@@ -6,6 +6,31 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
+## Proyecto Final de Tecnología Web.
+Buenas Ingeniero, debido a que el proyecto pesaba demasiado para el SVA, le invitamos a ver nuestro repositorio de GitHub donde se cargó el projecto.
+
+Integrantes:
+ - PACHAS ROMERO EVER
+ - PUERTAS SABINO DEIVIS
+ - RIVERA VERGARAY RONALDO
+
+Instrucciones:
+Este es un proyecto que se realizó utilizando Laravel 10. Para desplegarlo, primero implemente la base de datos bd_mantenimiento.sql que viene en el comprimido.
+Hay dos formas de descargar el proyecto del repositorio GitHub:
+ - Puede descargar directamente el repositorio para usarlo en su servidor local. 
+ - Otra manera es ubicarse en un espacio donde quiere tener el repositorio, y si tiene Git instalado, ejecutar desde esa ubicación en cmd: 
+git clone https://github.com/RonaldoRV247/TecwebFinal
+ 
+Para desplegar la aplicación, realizar lo siguiente:
+1) Modificar el archivo ".env" considerando la base de datos creada.
+2) En la terminal del proyecto, o abriendo cmd en el directorio ejecutar "composer install" para agregar las librerías y luego "php artisan key:generate" para generar la clave de la aplicación.
+3) Luego, ejecutar "npm install" para poder utilizar el gestor de paquetes de node.js
+4) Ejecutar "npm run dev" y luego "php artisan serve" y se desplegará la aplicación en la ruta que se mostrará en la terminal. A menos que cambie la ruta, usualmente la URL será http://127.0.0.1:8000/
+
+La BD viene con algunos datos de prueba. Dado que la aplicación tiene inicio de sesión, use el administrador:
+
+Usuario: vergaray247@gmail.com
+Contraseña: 12345678
 
 ## About Laravel
 
