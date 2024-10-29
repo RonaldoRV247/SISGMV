@@ -6,13 +6,6 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
-## Proyecto Final de Tecnología Web.
-Buenas Ingeniero, debido a que el proyecto pesaba demasiado para el SVA, le invitamos a ver nuestro repositorio de GitHub donde se cargó el projecto.
-
-Integrantes:
- - PACHAS ROMERO EVER
- - PUERTAS SABINO DEIVIS
- - RIVERA VERGARAY RONALDO
 
 Instrucciones:
 Este es un proyecto que se realizó utilizando Laravel 10. Para desplegarlo, primero implemente la base de datos bd_mantenimiento.sql que viene en el comprimido.
