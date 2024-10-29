@@ -12,7 +12,7 @@ Este es un proyecto que se realizó utilizando Laravel 10. Para desplegarlo, pri
 Hay dos formas de descargar el proyecto del repositorio GitHub:
  - Puede descargar directamente el repositorio para usarlo en su servidor local. 
  - Otra manera es ubicarse en un espacio donde quiere tener el repositorio, y si tiene Git instalado, ejecutar desde esa ubicación en cmd: 
-git clone https://github.com/RonaldoRV247/TecwebFinal
+git clone https://github.com/RonaldoRV247/SISGMV
  
 Para desplegar la aplicación, realizar lo siguiente:
 1) Modificar el archivo ".env" considerando la base de datos creada.
